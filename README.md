@@ -19,6 +19,23 @@ CrossPromoKit enables seamless cross-promotion between your iOS apps using a rem
 - **Localization**: Built-in support for localized taglines
 - **Swift 6.0**: Full strict concurrency compliance with Sendable types
 
+## Demo
+
+A demo app is included in the `Example/CrossPromoDemo` directory to showcase all features.
+
+<p align="center">
+  <img src="docs/images/demo-screenshot.png" width="300" alt="CrossPromoDemo Screenshot">
+</p>
+
+To run the demo:
+1. Open `Example/CrossPromoDemo/CrossPromoDemo.xcodeproj`
+2. Select a simulator and run
+
+The demo includes:
+- Live preview of MoreAppsView with sample apps
+- UI state controls (loaded, loading, empty, error)
+- Event logging for impressions and taps
+
 ## Requirements
 
 - iOS 17.0+

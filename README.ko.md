@@ -19,6 +19,23 @@ CrossPromoKit은 원격 JSON 카탈로그를 사용하여 iOS 앱 간 원활한 
 - **다국어 지원**: 지역화된 태그라인 내장 지원
 - **Swift 6.0**: Sendable 타입으로 완전한 엄격 동시성 준수
 
+## 데모
+
+`Example/CrossPromoDemo` 디렉토리에 모든 기능을 보여주는 데모 앱이 포함되어 있습니다.
+
+<p align="center">
+  <img src="docs/images/demo-screenshot.png" width="300" alt="CrossPromoDemo 스크린샷">
+</p>
+
+데모 실행 방법:
+1. `Example/CrossPromoDemo/CrossPromoDemo.xcodeproj` 열기
+2. 시뮬레이터 선택 후 실행
+
+데모에 포함된 기능:
+- 샘플 앱이 포함된 MoreAppsView 실시간 미리보기
+- UI 상태 컨트롤 (로드됨, 로딩 중, 빈 상태, 오류)
+- 노출 및 탭 이벤트 로깅
+
 ## 요구 사항
 
 - iOS 17.0+
