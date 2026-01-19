@@ -11,22 +11,35 @@ public struct AsyncAppIcon: View {
     }
 
     public var body: some View {
-        AsyncImage(url: url) { phase in
-            switch phase {
-            case .empty:
-                placeholder
-            case .success(let image):
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-            case .failure:
-                placeholder
-            @unknown default:
-                placeholder
+        Group {
+            if url.scheme == "sf-symbol" {
+                // SF Symbol: extract symbol name from host
+                Image(systemName: url.host ?? "app.fill")
+                    .font(.system(size: size * 0.5))
+                    .foregroundStyle(WarmEmbraceTokens.warmCoral)
+                    .frame(width: size, height: size)
+                    .background(WarmEmbraceTokens.secondaryBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: WarmEmbraceTokens.cornerRadiusS))
+            } else {
+                // Network URL: use AsyncImage
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .empty:
+                        placeholder
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    case .failure:
+                        placeholder
+                    @unknown default:
+                        placeholder
+                    }
+                }
+                .frame(width: size, height: size)
+                .clipShape(RoundedRectangle(cornerRadius: WarmEmbraceTokens.cornerRadiusS))
             }
         }
-        .frame(width: size, height: size)
-        .clipShape(RoundedRectangle(cornerRadius: WarmEmbraceTokens.cornerRadiusS))
     }
 
     private var placeholder: some View {
