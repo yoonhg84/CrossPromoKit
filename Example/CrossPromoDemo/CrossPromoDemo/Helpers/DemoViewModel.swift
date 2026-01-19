@@ -6,7 +6,7 @@ import SwiftUI
 @MainActor
 final class DemoViewModel {
     /// Current demo state for UI testing
-    var demoState: DemoState = .normal
+    var demoState: DemoState = .loaded
 
     /// Cache status description
     var cacheStatus: String {
@@ -36,7 +36,7 @@ final class DemoViewModel {
     func forceRefresh() {
         UserDefaults.standard.removeObject(forKey: "CrossPromoKit.CacheTimestamp")
         UserDefaults.standard.removeObject(forKey: "CrossPromoKit.CachedCatalog")
-        // Reset to normal state to trigger reload
-        demoState = .normal
+        // Reset to loaded state to trigger reload
+        demoState = .loaded
     }
 }

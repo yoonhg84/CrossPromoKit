@@ -21,7 +21,7 @@ struct SettingsView: View {
     @ViewBuilder
     private var moreAppsContent: some View {
         switch viewModel.demoState {
-        case .normal:
+        case .loaded:
             if let url = Bundle.main.url(forResource: "demo-apps", withExtension: "json") {
                 let config = PromoConfig(jsonURL: url, currentAppID: "photomagic")
                 MoreAppsView(config: config, eventDelegate: eventHandler)
@@ -49,7 +49,7 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                 Button("Try Again") {
-                    viewModel.demoState = .normal
+                    viewModel.demoState = .loaded
                 }
                 .buttonStyle(.bordered)
             }
@@ -67,7 +67,7 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                 Button("Retry") {
-                    viewModel.demoState = .normal
+                    viewModel.demoState = .loaded
                 }
                 .buttonStyle(.bordered)
             }
