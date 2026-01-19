@@ -57,6 +57,7 @@ public struct EmptyStateView: View {
         }
         .padding(.vertical, WarmEmbraceTokens.spacingXL)
         .padding(.horizontal, WarmEmbraceTokens.spacingL)
+        .frame(maxWidth: .infinity)
     }
 }
 

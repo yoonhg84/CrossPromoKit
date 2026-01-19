@@ -53,6 +53,7 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.bordered)
             }
+            .frame(maxWidth: .infinity)
             .padding(.vertical, 24)
         case .error:
             VStack(spacing: 12) {
@@ -70,6 +71,7 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.bordered)
             }
+            .frame(maxWidth: .infinity)
             .padding(.vertical, 24)
         }
     }
