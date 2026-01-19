@@ -1,0 +1,65 @@
+{
+  "apps": [
+    {
+      "id": "photomagic",
+      "name": "PhotoMagic",
+      "appStoreID": "1234567890",
+      "iconURL": "sf-symbol://camera.filters",
+      "category": "Photo & Video",
+      "tagline": {
+        "en": "Transform your photos with AI magic",
+        "ko": "AI 마법으로 사진을 변환하세요",
+        "ja": "AIマジックで写真を変換"
+      }
+    },
+    {
+      "id": "weatherpal",
+      "name": "WeatherPal",
+      "appStoreID": "1234567891",
+      "iconURL": "sf-symbol://cloud.sun.fill",
+      "category": "Weather",
+      "tagline": {
+        "en": "Your friendly weather companion",
+        "ko": "친근한 날씨 도우미",
+        "ja": "あなたの天気パートナー"
+      }
+    },
+    {
+      "id": "fittrack",
+      "name": "FitTrack",
+      "appStoreID": "1234567892",
+      "iconURL": "sf-symbol://figure.run",
+      "category": "Health & Fitness",
+      "tagline": {
+        "en": "Track your fitness journey",
+        "ko": "피트니스 여정을 추적하세요",
+        "ja": "フィットネスの旅を追跡"
+      }
+    },
+    {
+      "id": "noteflow",
+      "name": "NoteFlow",
+      "appStoreID": "1234567893",
+      "iconURL": "sf-symbol://note.text",
+      "category": "Productivity",
+      "tagline": {
+        "en": "Notes that flow with your thoughts",
+        "ko": "생각과 함께 흐르는 노트",
+        "ja": "思考と共に流れるノート"
+      }
+    },
+    {
+      "id": "budgetwise",
+      "name": "BudgetWise",
+      "appStoreID": "1234567894",
+      "iconURL": "sf-symbol://dollarsign.circle.fill",
+      "category": "Finance",
+      "tagline": {
+        "en": "Smart budgeting made simple",
+        "ko": "간단한 스마트 예산 관리",
+        "ja": "シンプルなスマート予算管理"
+      }
+    }
+  ],
+  "promoRules": null
+}

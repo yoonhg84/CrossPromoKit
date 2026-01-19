@@ -1,0 +1,46 @@
+{
+  "$schema": "Demo app icon color mapping for SF Symbols",
+  "description": "Maps app IDs to their SF Symbol and background color for demo icons",
+  "icons": {
+    "photomagic": {
+      "sfSymbol": "camera.filters",
+      "backgroundColor": {
+        "light": "#AF52DE",
+        "dark": "#BF5AF2"
+      },
+      "description": "Purple - creativity and magic"
+    },
+    "weatherpal": {
+      "sfSymbol": "cloud.sun.fill",
+      "backgroundColor": {
+        "light": "#007AFF",
+        "dark": "#0A84FF"
+      },
+      "description": "Blue - sky and weather"
+    },
+    "fittrack": {
+      "sfSymbol": "figure.run",
+      "backgroundColor": {
+        "light": "#34C759",
+        "dark": "#30D158"
+      },
+      "description": "Green - health and vitality"
+    },
+    "noteflow": {
+      "sfSymbol": "note.text",
+      "backgroundColor": {
+        "light": "#FF9500",
+        "dark": "#FF9F0A"
+      },
+      "description": "Orange - creativity and warmth"
+    },
+    "budgetwise": {
+      "sfSymbol": "dollarsign.circle.fill",
+      "backgroundColor": {
+        "light": "#5AC8FA",
+        "dark": "#64D2FF"
+      },
+      "description": "Teal - trust and finance"
+    }
+  }
+}
