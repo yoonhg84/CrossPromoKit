@@ -18,7 +18,7 @@ As a FinePocket app user, I want to discover other apps from the same developer 
 **Acceptance Scenarios**:
 
 1. **Given** I am in any FinePocket app's settings screen, **When** I navigate to the "More Apps" section, **Then** I see a list of other FinePocket apps (excluding the current app I'm using)
-2. **Given** the app list is displayed, **When** I view an app entry, **Then** I see the app icon, name, and a localized tagline in my device language
+2. **Given** the app list is displayed, **When** I view an app entry, **Then** I see the app icon, name, category label, and a localized tagline in my device language
 3. **Given** my device language is Korean, **When** I view an app entry, **Then** the tagline is displayed in Korean
 4. **Given** my device language is not supported (not ko/en/ja), **When** I view an app entry, **Then** the tagline falls back to English
 
@@ -94,11 +94,14 @@ As a FinePocket product manager, I want to control which apps are promoted withi
 - **FR-008**: Package MUST show all other apps when no promo rules are configured
 - **FR-009**: Package MUST provide a `MoreAppsView` component for embedding in settings screens
 - **FR-010**: Package MUST provide a `PromoAppRow` component for displaying individual app entries
-- **FR-011**: Package MUST display app icon, name, and localized tagline for each app entry
+- **FR-011**: Package MUST display app icon, name, category label, and localized tagline for each app entry
 - **FR-012**: Package MUST present an in-app App Store overlay when user taps an app row
 - **FR-013**: Package MUST handle offline scenarios gracefully without crashes or intrusive error messages
 - **FR-014**: Package MUST refresh cached data automatically when cache expires and network is available
 - **FR-015**: Package MUST support the following target apps: FineBill, Bookary, FinePomo, Stedio, Littory
+- **FR-016**: Package MUST display apps in the order defined in the JSON catalog (server-controlled ordering)
+- **FR-017**: Package MUST provide a delegate mechanism for host apps to receive promo events (app impression, app tap)
+- **FR-018**: Package MUST NOT collect or transmit analytics data directly; all event handling is delegated to host app
 
 ### Key Entities
 
@@ -106,6 +109,7 @@ As a FinePocket product manager, I want to control which apps are promoted withi
 - **LocalizedTagline**: Contains tagline text in multiple languages (en, ko, ja) with English as required fallback
 - **PromoRules**: Maps host app identifiers to arrays of allowed promotional app identifiers
 - **AppCatalog**: Root entity containing the list of all PromoApps and the PromoRules dictionary
+- **PromoEvent**: Represents an analytics event (impression, tap) with associated app identifier, delegated to host app for handling
 
 ## Success Criteria *(mandatory)*
 
@@ -118,6 +122,14 @@ As a FinePocket product manager, I want to control which apps are promoted withi
 - **SC-005**: Fresh data is fetched within 2 seconds on a standard mobile connection
 - **SC-006**: Package can be integrated into a host app with a single line of code: `MoreAppsView(currentAppID: "appid")`
 - **SC-007**: All 5 target apps (FineBill, Bookary, FinePomo, Stedio, Littory) are supported in the catalog
+
+## Clarifications
+
+### Session 2026-01-19
+
+- Q: 앱 목록 정렬 순서는? → A: JSON에서 정의된 순서 (서버 제어)
+- Q: Analytics 이벤트 수집 방식은? → A: 호스트 앱에 delegate로 이벤트 전달 (호스트가 처리)
+- Q: Category 필드의 용도는? → A: 카테고리 레이블로 앱 row에 표시
 
 ## Assumptions
 
