@@ -16,10 +16,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "CrossPromoKit",
-            swiftSettings: [
-                .enableExperimentalFeature("StrictConcurrency")
-            ]
+            name: "CrossPromoKit"
         ),
         .testTarget(
             name: "CrossPromoKitTests",
