@@ -1,0 +1,71 @@
+{
+  "apps": [
+    {
+      "id": "finebill",
+      "name": "FineBill",
+      "appStoreID": "1234567891",
+      "iconURL": "https://raw.githubusercontent.com/user/repo/main/icons/finebill.png",
+      "category": "생산성",
+      "tagline": {
+        "en": "Track your bills effortlessly",
+        "ko": "손쉬운 청구서 관리",
+        "ja": "請求書を簡単に追跡"
+      }
+    },
+    {
+      "id": "bookary",
+      "name": "Bookary",
+      "appStoreID": "1234567892",
+      "iconURL": "https://raw.githubusercontent.com/user/repo/main/icons/bookary.png",
+      "category": "독서",
+      "tagline": {
+        "en": "Your personal book companion",
+        "ko": "나만의 독서 친구",
+        "ja": "あなたの読書パートナー"
+      }
+    },
+    {
+      "id": "finepomo",
+      "name": "FinePomo",
+      "appStoreID": "1234567893",
+      "iconURL": "https://raw.githubusercontent.com/user/repo/main/icons/finepomo.png",
+      "category": "시간 관리",
+      "tagline": {
+        "en": "Focus with pomodoro technique",
+        "ko": "뽀모도로로 집중하기",
+        "ja": "ポモドーロで集中"
+      }
+    },
+    {
+      "id": "stedio",
+      "name": "Stedio",
+      "appStoreID": "1234567894",
+      "iconURL": "https://raw.githubusercontent.com/user/repo/main/icons/stedio.png",
+      "category": "음악",
+      "tagline": {
+        "en": "Your daily audio companion",
+        "ko": "매일의 오디오 친구",
+        "ja": "毎日のオーディオ仲間"
+      }
+    },
+    {
+      "id": "littory",
+      "name": "Littory",
+      "appStoreID": "1234567895",
+      "iconURL": "https://raw.githubusercontent.com/user/repo/main/icons/littory.png",
+      "category": "라이프스타일",
+      "tagline": {
+        "en": "Capture your little stories",
+        "ko": "작은 이야기를 담다",
+        "ja": "小さな物語を記録"
+      }
+    }
+  ],
+  "promoRules": {
+    "finebill": ["bookary", "finepomo", "littory"],
+    "bookary": ["finebill", "littory"],
+    "finepomo": ["finebill", "stedio"],
+    "stedio": ["finepomo", "littory"],
+    "littory": ["bookary", "stedio"]
+  }
+}

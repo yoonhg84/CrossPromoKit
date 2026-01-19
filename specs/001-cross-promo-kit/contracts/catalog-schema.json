@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://finepocket.com/schemas/cross-promo-catalog.json",
+  "title": "CrossPromoKit App Catalog",
+  "description": "JSON schema for the cross-promotion app catalog endpoint",
+  "type": "object",
+  "required": ["apps"],
+  "properties": {
+    "apps": {
+      "type": "array",
+      "description": "Array of promotable FinePocket apps",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/PromoApp"
+      }
+    },
+    "promoRules": {
+      "type": "object",
+      "description": "Maps host app ID to array of allowed promo app IDs. If omitted, all apps are shown.",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "PromoApp": {
+      "type": "object",
+      "required": ["id", "name", "appStoreID", "iconURL", "category", "tagline"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the app (lowercase, alphanumeric with hyphens)",
+          "pattern": "^[a-z0-9-]+$",
+          "examples": ["finebill", "bookary", "finepomo"]
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name of the app",
+          "minLength": 1,
+          "examples": ["FineBill", "Bookary", "FinePomo"]
+        },
+        "appStoreID": {
+          "type": "string",
+          "description": "Apple App Store numeric ID",
+          "pattern": "^[0-9]+$",
+          "examples": ["1234567890"]
+        },
+        "iconURL": {
+          "type": "string",
+          "format": "uri",
+          "description": "HTTPS URL to the app icon image",
+          "pattern": "^https://.*",
+          "examples": ["https://example.com/icons/finebill.png"]
+        },
+        "category": {
+          "type": "string",
+          "description": "Category label displayed in the UI",
+          "minLength": 1,
+          "examples": ["생산성", "독서", "시간 관리"]
+        },
+        "tagline": {
+          "$ref": "#/$defs/LocalizedText"
+        }
+      }
+    },
+    "LocalizedText": {
+      "type": "object",
+      "required": ["en"],
+      "description": "Localized text with English as required fallback",
+      "properties": {
+        "en": {
+          "type": "string",
+          "description": "English text (required fallback)",
+          "minLength": 1
+        },
+        "ko": {
+          "type": "string",
+          "description": "Korean text (optional)"
+        },
+        "ja": {
+          "type": "string",
+          "description": "Japanese text (optional)"
+        }
+      }
+    }
+  }
+}
