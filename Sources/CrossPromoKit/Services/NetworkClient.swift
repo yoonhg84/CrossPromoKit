@@ -9,20 +9,29 @@ public actor NetworkClient {
     }
 
     /// Fetches the app catalog from the specified URL.
-    /// - Parameter url: The URL to fetch the catalog from
+    /// - Parameter url: The URL to fetch the catalog from (supports both http(s):// and file:// URLs)
     /// - Returns: The decoded AppCatalog
     /// - Throws: NetworkError if the request fails or data is invalid
     public func fetchCatalog(from url: URL) async throws -> AppCatalog {
         let (data, response) = try await urlSession.data(from: url)
 
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw NetworkError.invalidResponse
+        // Handle based on URL scheme
+        if url.isFileURL {
+            // For file URLs: just validate we got data
+            guard !data.isEmpty else {
+                throw NetworkError.noData
+            }
+        } else {
+            // For HTTP(S): validate HTTP response
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw NetworkError.invalidResponse
+            }
+            guard (200...299).contains(httpResponse.statusCode) else {
+                throw NetworkError.httpError(statusCode: httpResponse.statusCode)
+            }
         }
 
-        guard (200...299).contains(httpResponse.statusCode) else {
-            throw NetworkError.httpError(statusCode: httpResponse.statusCode)
-        }
-
+        // Decode regardless of source
         do {
             let decoder = JSONDecoder()
             return try decoder.decode(AppCatalog.self, from: data)
