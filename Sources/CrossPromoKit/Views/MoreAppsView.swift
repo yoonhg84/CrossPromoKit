@@ -4,17 +4,29 @@ import SwiftUI
 /// Embed this in your settings screen or anywhere you want to show cross-promotions.
 public struct MoreAppsView: View {
     @State private var service: PromoService
+    @Binding private var forceRefresh: Bool
 
     /// Creates a MoreAppsView with the specified current app ID.
     /// - Parameter currentAppID: Your app's identifier to exclude from the list
     public init(currentAppID: String) {
         _service = State(initialValue: PromoService(currentAppID: currentAppID))
+        _forceRefresh = .constant(false)
     }
 
     /// Creates a MoreAppsView with a custom configuration.
     /// - Parameter config: Custom configuration with JSON URL and app ID
     public init(config: PromoConfig) {
         _service = State(initialValue: PromoService(config: config))
+        _forceRefresh = .constant(false)
+    }
+
+    /// Creates a MoreAppsView with a custom configuration and force refresh binding.
+    /// - Parameters:
+    ///   - config: Custom configuration with JSON URL and app ID
+    ///   - forceRefresh: Binding to trigger force refresh from cache
+    public init(config: PromoConfig, forceRefresh: Binding<Bool>) {
+        _service = State(initialValue: PromoService(config: config))
+        _forceRefresh = forceRefresh
     }
 
     /// Creates a MoreAppsView with a custom configuration and event delegate.
@@ -25,6 +37,19 @@ public struct MoreAppsView: View {
         let promoService = PromoService(config: config)
         promoService.eventDelegate = eventDelegate
         _service = State(initialValue: promoService)
+        _forceRefresh = .constant(false)
+    }
+
+    /// Creates a MoreAppsView with a custom configuration, event delegate, and force refresh binding.
+    /// - Parameters:
+    ///   - config: Custom configuration with JSON URL and app ID
+    ///   - eventDelegate: Delegate for receiving analytics events
+    ///   - forceRefresh: Binding to trigger force refresh from cache
+    public init(config: PromoConfig, eventDelegate: PromoEventDelegate?, forceRefresh: Binding<Bool>) {
+        let promoService = PromoService(config: config)
+        promoService.eventDelegate = eventDelegate
+        _service = State(initialValue: promoService)
+        _forceRefresh = forceRefresh
     }
 
     public var body: some View {
@@ -39,6 +64,14 @@ public struct MoreAppsView: View {
         }
         .task {
             await service.loadApps()
+        }
+        .onChange(of: forceRefresh) { _, newValue in
+            if newValue {
+                Task {
+                    await service.forceRefresh()
+                    forceRefresh = false
+                }
+            }
         }
         .alert("App Store를 열 수 없습니다", isPresented: .init(
             get: { service.showingOverlayError },
