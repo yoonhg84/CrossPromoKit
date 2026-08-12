@@ -168,15 +168,23 @@ In this example:
 The main SwiftUI view for displaying promotable apps.
 
 ```swift
+init(
+    config: PromoConfig,
+    eventDelegate: PromoEventDelegate? = nil,
+    forceRefresh: Binding<Bool> = .constant(false)
+)
+```
+
+```swift
 // Basic initialization
-MoreAppsView(config: PromoConfig)
+MoreAppsView(config: config)
 
 // With analytics
-MoreAppsView(config: PromoConfig, eventDelegate: PromoEventDelegate?)
+MoreAppsView(config: config, eventDelegate: handler)
 
 // With a force-refresh binding
-MoreAppsView(config: PromoConfig, forceRefresh: Binding<Bool>)
-MoreAppsView(config: PromoConfig, eventDelegate: PromoEventDelegate?, forceRefresh: Binding<Bool>)
+MoreAppsView(config: config, forceRefresh: $isRefreshing)
+MoreAppsView(config: config, eventDelegate: handler, forceRefresh: $isRefreshing)
 ```
 
 ### PromoConfig

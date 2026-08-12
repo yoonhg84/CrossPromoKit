@@ -6,39 +6,17 @@ public struct MoreAppsView: View {
     @State private var service: PromoService
     @Binding private var forceRefresh: Bool
 
-    /// Creates a MoreAppsView with a custom configuration.
-    /// - Parameter config: Custom configuration with JSON URL and app ID
-    public init(config: PromoConfig) {
-        _service = State(initialValue: PromoService(config: config))
-        _forceRefresh = .constant(false)
-    }
-
-    /// Creates a MoreAppsView with a custom configuration and force refresh binding.
-    /// - Parameters:
-    ///   - config: Custom configuration with JSON URL and app ID
-    ///   - forceRefresh: Binding to trigger force refresh from cache
-    public init(config: PromoConfig, forceRefresh: Binding<Bool>) {
-        _service = State(initialValue: PromoService(config: config))
-        _forceRefresh = forceRefresh
-    }
-
-    /// Creates a MoreAppsView with a custom configuration and event delegate.
+    /// Creates a MoreAppsView.
     /// - Parameters:
     ///   - config: Custom configuration with JSON URL and app ID
     ///   - eventDelegate: Delegate for receiving analytics events
-    public init(config: PromoConfig, eventDelegate: PromoEventDelegate?) {
-        let promoService = PromoService(config: config)
-        promoService.eventDelegate = eventDelegate
-        _service = State(initialValue: promoService)
-        _forceRefresh = .constant(false)
-    }
-
-    /// Creates a MoreAppsView with a custom configuration, event delegate, and force refresh binding.
-    /// - Parameters:
-    ///   - config: Custom configuration with JSON URL and app ID
-    ///   - eventDelegate: Delegate for receiving analytics events
-    ///   - forceRefresh: Binding to trigger force refresh from cache
-    public init(config: PromoConfig, eventDelegate: PromoEventDelegate?, forceRefresh: Binding<Bool>) {
+    ///   - forceRefresh: Binding that triggers a network refresh when set to
+    ///     `true`; the view resets it to `false` once the refresh completes
+    public init(
+        config: PromoConfig,
+        eventDelegate: PromoEventDelegate? = nil,
+        forceRefresh: Binding<Bool> = .constant(false)
+    ) {
         let promoService = PromoService(config: config)
         promoService.eventDelegate = eventDelegate
         _service = State(initialValue: promoService)

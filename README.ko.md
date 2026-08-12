@@ -168,15 +168,23 @@ MoreAppsView(config: config, eventDelegate: handler)
 프로모션 앱을 표시하는 메인 SwiftUI 뷰입니다.
 
 ```swift
+init(
+    config: PromoConfig,
+    eventDelegate: PromoEventDelegate? = nil,
+    forceRefresh: Binding<Bool> = .constant(false)
+)
+```
+
+```swift
 // 기본 초기화
-MoreAppsView(config: PromoConfig)
+MoreAppsView(config: config)
 
 // 분석 연동
-MoreAppsView(config: PromoConfig, eventDelegate: PromoEventDelegate?)
+MoreAppsView(config: config, eventDelegate: handler)
 
 // 강제 새로고침 바인딩
-MoreAppsView(config: PromoConfig, forceRefresh: Binding<Bool>)
-MoreAppsView(config: PromoConfig, eventDelegate: PromoEventDelegate?, forceRefresh: Binding<Bool>)
+MoreAppsView(config: config, forceRefresh: $isRefreshing)
+MoreAppsView(config: config, eventDelegate: handler, forceRefresh: $isRefreshing)
 ```
 
 ### PromoConfig
