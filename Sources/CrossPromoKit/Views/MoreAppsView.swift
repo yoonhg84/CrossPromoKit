@@ -6,13 +6,6 @@ public struct MoreAppsView: View {
     @State private var service: PromoService
     @Binding private var forceRefresh: Bool
 
-    /// Creates a MoreAppsView with the specified current app ID.
-    /// - Parameter currentAppID: Your app's identifier to exclude from the list
-    public init(currentAppID: String) {
-        _service = State(initialValue: PromoService(currentAppID: currentAppID))
-        _forceRefresh = .constant(false)
-    }
-
     /// Creates a MoreAppsView with a custom configuration.
     /// - Parameter config: Custom configuration with JSON URL and app ID
     public init(config: PromoConfig) {

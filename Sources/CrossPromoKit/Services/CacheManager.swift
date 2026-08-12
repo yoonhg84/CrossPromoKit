@@ -41,24 +41,34 @@ public actor CacheManager: Sendable {
         }
     }
 
-    /// Loads the cached catalog if it exists and hasn't expired.
-    /// - Returns: The cached catalog, or nil if not available or expired
-    public func loadIfValid() -> AppCatalog? {
+    /// Loads the cached catalog regardless of its age.
+    ///
+    /// Expired data is still returned: when the network is unavailable, stale
+    /// promotions are better than an empty list. Use ``isExpired()`` to decide
+    /// whether a network refresh is worth attempting.
+    /// - Returns: The cached catalog, or nil if no cache exists or it is corrupt
+    public func load() -> AppCatalog? {
         guard let data = userDefaults.data(forKey: CacheKeys.catalog) else {
-            return nil
-        }
-
-        guard !isExpired() else {
-            clearCache()
             return nil
         }
 
         do {
             return try decoder.decode(AppCatalog.self, from: data)
         } catch {
+            // Corrupt data is unusable at any age - drop it
             clearCache()
             return nil
         }
+    }
+
+    /// Loads the cached catalog only if it exists and hasn't expired.
+    ///
+    /// Expired data is left in place so it remains available to ``load()`` as an
+    /// offline fallback.
+    /// - Returns: The cached catalog, or nil if not available or expired
+    public func loadIfValid() -> AppCatalog? {
+        guard !isExpired() else { return nil }
+        return load()
     }
 
     /// Checks if the cache has expired (older than 24 hours).

@@ -48,14 +48,6 @@ public final class PromoService: Sendable {
         self.cacheManager = cacheManager
     }
 
-    /// Convenience initializer with just currentAppID and default JSON URL.
-    /// - Parameter currentAppID: The host app's identifier to exclude from the list
-    public convenience init(currentAppID: String) {
-        let defaultURL = URL(string: "https://raw.githubusercontent.com/user/repo/main/promo-catalog.json")!
-        let config = PromoConfig(jsonURL: defaultURL, currentAppID: currentAppID)
-        self.init(config: config)
-    }
-
     // MARK: - Public Methods
 
     /// Loads apps using three-tier fallback: Network → Cache → Empty State.
@@ -75,11 +67,12 @@ public final class PromoService: Sendable {
             // Save to cache on successful network fetch
             await cacheManager.save(fetchedCatalog)
         } catch {
-            // Tier 2: Try cached data
-            if let cachedCatalog = await cacheManager.loadIfValid() {
+            // Tier 2: Fall back to cached data, even if expired - stale
+            // promotions are more useful than an empty list while offline
+            if let cachedCatalog = await cacheManager.load() {
                 catalog = cachedCatalog
                 apps = filterApps(from: cachedCatalog)
-                // Don't set error - we have valid cached data
+                // Don't set error - we have cached data to show
             } else {
                 // Tier 3: Empty state with error
                 self.error = error
@@ -91,9 +84,10 @@ public final class PromoService: Sendable {
     }
 
     /// Forces a refresh from the network, ignoring cache.
+    ///
+    /// The existing cache is kept so it can still serve as a fallback if the
+    /// network fetch fails; a successful fetch overwrites it.
     public func forceRefresh() async {
-        // Clear cache to force network fetch
-        await cacheManager.clearCache()
         await loadApps()
     }
 
