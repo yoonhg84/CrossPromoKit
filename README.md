@@ -311,8 +311,8 @@ enum PromoEvent {
 
 Two things are localized independently:
 
-- **Catalog content** (`tagline`, `category`) — supplied by your JSON, keyed by language code, falling back to English.
-- **Built-in UI strings** (empty states, retry/cancel buttons, the App Store overlay error alert) — shipped inside the package as a String Catalog (`Sources/CrossPromoKit/Resources/Localizable.xcstrings`).
+- **Catalog content** (`tagline`) — supplied by your JSON, keyed by language code: `en` is required, `ko` and `ja` are optional, and a missing match for the device locale falls back to English. `category` is *not* localized — it is a plain string rendered exactly as written, so showing different category text per language means serving separate catalogs.
+- **Built-in UI strings** (empty states, retry/cancel buttons, the App Store overlay error alert, VoiceOver labels) — shipped inside the package as a String Catalog (`Sources/CrossPromoKit/Resources/Localizable.xcstrings`), so they stay localized regardless of the host app's bundle.
 
 Bundled UI languages: English (source), Korean, Japanese. Other locales fall back to English.
 
