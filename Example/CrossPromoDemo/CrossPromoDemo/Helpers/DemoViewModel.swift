@@ -13,7 +13,10 @@ final class DemoViewModel {
     ///
     /// Stored rather than computed because ``CacheManager`` is an actor and a
     /// computed property cannot await.
-    private(set) var cacheStatus: String = "Empty (no cache)"
+    ///
+    /// Typed as `LocalizedStringResource` so `Text(_:)` resolves the value through the
+    /// String Catalog. A plain `String` would bypass localization entirely.
+    private(set) var cacheStatus: LocalizedStringResource = "Empty (no cache)"
 
     /// Cache scoped to the demo's catalog URL, or nil when the bundled JSON is missing.
     ///
@@ -46,6 +49,9 @@ final class DemoViewModel {
             return
         }
 
+        // RelativeDateTimeFormatter already localizes its own output, so only the
+        // surrounding phrasing needs a catalog entry; the formatted time goes in as
+        // the "%@" argument of the "Expired/Valid (cached %@)" keys.
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .full
         let cachedAt = Date().addingTimeInterval(-age)

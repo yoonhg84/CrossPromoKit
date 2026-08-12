@@ -161,6 +161,28 @@
         }
       }
     },
+    "Empty (no cache)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empty (no cache)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空 (キャッシュなし)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비어있음 (캐시 없음)"
+          }
+        }
+      }
+    },
     "Error" : {
       "localizations" : {
         "ja" : {
@@ -189,6 +211,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "목록에서 제외됨"
+          }
+        }
+      }
+    },
+    "Expired (cached %@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expired (cached %@)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "期限切れ (%@ キャッシュ)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "만료됨 (%@ 캐시됨)"
           }
         }
       }
@@ -525,6 +569,50 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "앱을 로드할 수 없습니다. 나중에 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "Unavailable (demo-apps.json not found)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unavailable (demo-apps.json not found)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "利用不可 (demo-apps.jsonが見つかりません)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용 불가 (demo-apps.json을 찾을 수 없음)"
+          }
+        }
+      }
+    },
+    "Valid (cached %@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valid (cached %@)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効 (%@ キャッシュ)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "유효함 (%@ 캐시됨)"
           }
         }
       }
