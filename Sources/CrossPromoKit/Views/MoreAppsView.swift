@@ -36,6 +36,11 @@ public struct MoreAppsView: View {
         .task {
             await service.loadApps()
         }
+        .onDisappear {
+            // The overlay belongs to the window scene, not to this view, so it
+            // would linger on screen after the promo UI is gone.
+            service.dismissOverlay()
+        }
         .onChange(of: forceRefresh) { _, newValue in
             if newValue {
                 Task {

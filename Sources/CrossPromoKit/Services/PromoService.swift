@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import StoreKit
 
 /// Main service for managing cross-promotion functionality.
 /// Handles fetching, caching, and filtering of promotable apps.
@@ -32,20 +31,36 @@ public final class PromoService: Sendable {
     private let config: PromoConfig
     private let networkClient: NetworkClient
     private let cacheManager: CacheManager
+    private let overlayPresenter: AppStoreOverlayPresenting
     private var catalog: AppCatalog?
-    private var currentOverlay: SKOverlay?
     private var trackedImpressions: Set<String> = []
 
     // MARK: - Initialization
 
-    public init(
+    public convenience init(
         config: PromoConfig,
         networkClient: NetworkClient = NetworkClient(),
         cacheManager: CacheManager = CacheManager()
     ) {
+        self.init(
+            config: config,
+            networkClient: networkClient,
+            cacheManager: cacheManager,
+            overlayPresenter: SKOverlayPresenter()
+        )
+    }
+
+    /// Designated initializer allowing the overlay presenter to be substituted in tests.
+    init(
+        config: PromoConfig,
+        networkClient: NetworkClient = NetworkClient(),
+        cacheManager: CacheManager = CacheManager(),
+        overlayPresenter: AppStoreOverlayPresenting
+    ) {
         self.config = config
         self.networkClient = networkClient
         self.cacheManager = cacheManager
+        self.overlayPresenter = overlayPresenter
     }
 
     // MARK: - Public Methods
@@ -107,6 +122,16 @@ public final class PromoService: Sendable {
         emit(.impression(appID: app.id))
     }
 
+    /// Dismisses the App Store overlay this service is currently presenting, if any.
+    ///
+    /// The overlay lives on the window scene rather than on any particular view,
+    /// so it outlives the view that triggered it. Call this when the promo UI
+    /// goes away — ``MoreAppsView`` does so on `onDisappear`. Calling it when no
+    /// overlay is presented is a no-op.
+    public func dismissOverlay() {
+        overlayPresenter.dismiss()
+    }
+
     /// Dismisses the current overlay error alert.
     public func dismissOverlayError() {
         showingOverlayError = false
@@ -145,18 +170,14 @@ public final class PromoService: Sendable {
     // MARK: - Private Methods
 
     private func presentAppStoreOverlay(for app: PromoApp) {
-        guard let windowScene = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .first(where: { $0.activationState == .foregroundActive })
-        else {
+        // Tapping a second app while an overlay is up would otherwise stack a new
+        // overlay on top of the old one, so retire the previous one first.
+        overlayPresenter.dismiss()
+
+        guard overlayPresenter.present(appStoreID: app.appStoreID) else {
             handleOverlayError(for: app)
             return
         }
-
-        let config = SKOverlay.AppConfiguration(appIdentifier: app.appStoreID, position: .bottom)
-        let overlay = SKOverlay(configuration: config)
-        currentOverlay = overlay
-        overlay.present(in: windowScene)
     }
 
     private func handleOverlayError(for app: PromoApp) {
