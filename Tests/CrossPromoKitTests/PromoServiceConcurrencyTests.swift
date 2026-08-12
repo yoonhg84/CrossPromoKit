@@ -275,6 +275,29 @@ struct PromoServiceConcurrencyTests {
         #expect(service.error == nil)
     }
 
+    @Test("expire() makes the next loadApps issue a request")
+    func expireForcesTheNextLoadToFetch() async throws {
+        let storage = IsolatedDefaults()
+        defer { storage.remove() }
+        let (session, responder) = GatedURLProtocol.makeSession(bodies: [
+            try Fixture.json(for: Fixture.catalog(ids: ["host", "network"]))
+        ])
+        defer { GatedURLProtocol.reset() }
+        responder.release()  // nothing is held open in this scenario
+        let cache = CacheManager(scope: jsonURL, userDefaults: storage.make())
+        await cache.save(Fixture.catalog(ids: ["host", "cached"]))
+        let service = makeService(session: session, storage: storage)
+
+        // Without this the cache is valid and the load is answered from it -
+        // `validCacheIssuesNoRequest` pins that. Only the expire() call below
+        // can be responsible for the request counted here.
+        await cache.expire()
+        await service.loadApps()
+
+        #expect(responder.requestCount == 1)
+        #expect(service.apps.map(\.id) == ["network"])
+    }
+
     @Test("An expired cache issues exactly one request")
     func expiredCacheIssuesOneRequest() async throws {
         let storage = IsolatedDefaults()

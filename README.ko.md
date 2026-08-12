@@ -255,6 +255,9 @@ class PromoService {
 actor CacheManager {
     init(scope: URL, userDefaults: UserDefaults = .standard)
     init(scopeIdentifier: String, userDefaults: UserDefaults = .standard)
+
+    func expire()      // 데이터는 남기고 만료 표시만
+    func clearCache()  // 데이터를 삭제
 }
 ```
 
@@ -263,6 +266,28 @@ actor CacheManager {
 기본적으로 `config.jsonURL`을 스코프로 하는 `CacheManager(scope:)`를 직접
 만들며, 다른 네임스페이스나 별도의 `UserDefaults` 스위트가 필요할 때만 직접
 전달하면 됩니다.
+
+#### 캐시 무효화하기
+
+다음 로드를 네트워크로 보내는 방법은 세 가지이며, **실패했을 때 무엇이 남는지**가
+다릅니다.
+
+| | 캐시 데이터 | 다음 로드 | 실패 시 폴백 |
+|---|---|---|---|
+| `CacheManager.clearCache()` | 삭제 | 네트워크 | 없음 — 빈 화면 |
+| `CacheManager.expire()` | 유지 | 네트워크 | 오래된 데이터 |
+| `PromoService.forceRefresh()` | 유지 | 네트워크 (1회) | 캐시 데이터 |
+
+서버에서 카탈로그를 갱신하고 푸시로 알리는 경우에 필요한 것은 `expire()`입니다.
+데이터는 오프라인 폴백으로 남지만 더 이상 최신으로 취급되지 않으므로, 다음
+`loadApps()`가 캐시에서 끝나지 않고 실제로 fetch합니다. `forceRefresh()`는 캐시
+상태를 바꾸지 않고 한 번만 우회하므로, 이후의 `loadApps()`는 다시 캐시로
+응답됩니다.
+
+```swift
+let cache = CacheManager(scope: config.jsonURL)
+await cache.expire()  // 다음 loadApps()는 fetch하고, 실패하면 기존 데이터가 남는다
+```
 
 ### PromoEvent
 

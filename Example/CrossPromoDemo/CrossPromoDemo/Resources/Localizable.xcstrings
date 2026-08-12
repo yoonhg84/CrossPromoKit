@@ -1,18 +1,18 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "A valid cache is used without any fetch. Force Refresh always fetches, keeping the old cache as a fallback if the fetch fails; Clear Cache removes that fallback." : {
+    "A valid cache is used without any fetch. Force Refresh always fetches, keeping the old cache as a fallback if the fetch fails; Clear Cache removes that fallback. Expire Cache keeps the data but makes the next ordinary load fetch — delete the catalog file first and the stale list is what you get back." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "有効なキャッシュがあれば取得は行われません。強制更新は常に取得し、失敗したときのフォールバックとして既存のキャッシュを残します。キャッシュを消去するとそのフォールバックがなくなります。"
+            "value" : "有効なキャッシュがあれば取得は行われません。強制更新は常に取得し、失敗したときのフォールバックとして既存のキャッシュを残します。キャッシュを消去するとそのフォールバックがなくなります。キャッシュを期限切れにするとデータは残したまま、次の通常の読み込みで取得が行われます — カタログファイルを先に削除すれば、古いリストがそのまま返ってきます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "캐시가 유효하면 가져오기를 하지 않습니다. 강제 새로고침은 항상 가져오며 실패에 대비해 기존 캐시를 남겨 둡니다. 캐시 지우기는 그 폴백을 없앱니다."
+            "value" : "캐시가 유효하면 가져오기를 하지 않습니다. 강제 새로고침은 항상 가져오며 실패에 대비해 기존 캐시를 남겨 둡니다. 캐시 지우기는 그 폴백을 없앱니다. 캐시 만료는 데이터를 남긴 채 다음 일반 로드가 네트워크를 타게 만듭니다 — 카탈로그 파일을 먼저 지우면 오래된 목록이 그대로 돌아옵니다."
           }
         }
       }
@@ -281,6 +281,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이벤트"
+          }
+        }
+      }
+    },
+    "Expire Cache" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャッシュを期限切れにする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캐시 만료"
           }
         }
       }

@@ -151,6 +151,16 @@ final class DemoViewModel {
         }
     }
 
+    /// Marks the cached catalog stale without dropping it.
+    ///
+    /// The Debug tab's way of reaching the expiry path: the next load has to go
+    /// to the network, but the data stays, so deleting the catalog file first
+    /// shows the stale cache standing in for the failed fetch.
+    func expireCache() async {
+        await cacheManager?.expire()
+        await refreshCacheStatus()
+    }
+
     /// Drops the cached catalog for the current scenario.
     ///
     /// Separate from a refresh on purpose: a refresh keeps the cache so it can

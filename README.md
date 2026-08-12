@@ -256,6 +256,9 @@ The catalog cache (UserDefaults-backed, 24-hour expiration).
 actor CacheManager {
     init(scope: URL, userDefaults: UserDefaults = .standard)
     init(scopeIdentifier: String, userDefaults: UserDefaults = .standard)
+
+    func expire()      // Mark stale, keep the data
+    func clearCache()  // Remove the data
 }
 ```
 
@@ -264,6 +267,28 @@ Cache entries are **scoped to the catalog URL** the data came from, so two
 overwriting each other. `PromoService` builds its own `CacheManager(scope:)` from
 `config.jsonURL` by default; pass one explicitly only if you need a different
 namespace or a separate `UserDefaults` suite.
+
+#### Invalidating a cache
+
+Three ways to make the next load go to the network, differing in what is left to
+fall back on when that load fails:
+
+| | Cached data | Next load | Fallback if the fetch fails |
+|---|---|---|---|
+| `CacheManager.clearCache()` | removed | network | none — empty state |
+| `CacheManager.expire()` | kept | network | the stale data |
+| `PromoService.forceRefresh()` | kept | network, once | the cached data |
+
+`expire()` is what a push notification saying "the catalog changed" should
+trigger: the data stays available offline, but it is no longer trusted as fresh,
+so the next ordinary `loadApps()` fetches instead of short-circuiting on the
+cache. `forceRefresh()` bypasses the cache for a single call without changing its
+state, so a later `loadApps()` is answered from the cache again.
+
+```swift
+let cache = CacheManager(scope: config.jsonURL)
+await cache.expire()  // Next loadApps() fetches; stale data survives a failure
+```
 
 ### PromoEvent
 

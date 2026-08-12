@@ -64,13 +64,17 @@ struct DebugView: View {
                 Task { await viewModel.forceRefreshAndWait() }
             }
 
+            Button("Expire Cache") {
+                Task { await viewModel.expireCache() }
+            }
+
             Button("Clear Cache", role: .destructive) {
                 Task { await viewModel.clearCache() }
             }
         } header: {
             Text("Cache")
         } footer: {
-            Text("A valid cache is used without any fetch. Force Refresh always fetches, keeping the old cache as a fallback if the fetch fails; Clear Cache removes that fallback.")
+            Text("A valid cache is used without any fetch. Force Refresh always fetches, keeping the old cache as a fallback if the fetch fails; Clear Cache removes that fallback. Expire Cache keeps the data but makes the next ordinary load fetch — delete the catalog file first and the stale list is what you get back.")
         }
     }
 

@@ -229,6 +229,41 @@ struct PromoServiceLoadTests {
         #expect(service.error == nil)
     }
 
+    @Test("After expire() a failed fetch is still covered by the retained cache")
+    func expiredByAPIStillFallsBackToCache() async {
+        let storage = IsolatedDefaults()
+        defer { storage.remove() }
+        let url = missingURL
+        await probeCache(storage, scope: url).save(Fixture.catalog(ids: ["host", "finebill"]))
+        // Marks the cache stale without touching internal keys - what a host app
+        // can actually do. The URL does not exist, so the load this provokes
+        // fails and the retained data has to answer.
+        await probeCache(storage, scope: url).expire()
+        let service = makeService(jsonURL: url, storage: storage)
+
+        await service.loadApps()
+
+        #expect(service.apps.map(\.id) == ["finebill"])
+        #expect(service.error == nil)
+    }
+
+    @Test("After clearCache() the same failure leaves the empty state")
+    func clearedCacheLeavesNoFallback() async {
+        let storage = IsolatedDefaults()
+        defer { storage.remove() }
+        let url = missingURL
+        await probeCache(storage, scope: url).save(Fixture.catalog(ids: ["host", "finebill"]))
+        // The contrast that motivates expire(): same setup, same failing fetch,
+        // but clearing destroys the fallback.
+        await probeCache(storage, scope: url).clearCache()
+        let service = makeService(jsonURL: url, storage: storage)
+
+        await service.loadApps()
+
+        #expect(service.apps.isEmpty)
+        #expect(service.error != nil)
+    }
+
     @Test("A valid cache is used as-is and the network is never consulted")
     func validCacheShortCircuitsTheNetwork() async throws {
         let storage = IsolatedDefaults()
