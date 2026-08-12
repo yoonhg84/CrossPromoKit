@@ -6,3 +6,6 @@ DerivedData/
 .swiftpm/configuration/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
+
+# Transient worktrees created for parallel agent runs (see .claude/commands/ship.md)
+/.claude/worktrees/
