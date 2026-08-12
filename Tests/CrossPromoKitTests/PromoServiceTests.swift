@@ -155,13 +155,14 @@ struct PromoServiceLoadTests {
         PromoService(
             config: PromoConfig(jsonURL: jsonURL, currentAppID: currentAppID),
             networkClient: NetworkClient(),
-            cacheManager: CacheManager(userDefaults: storage.make())
+            cacheManager: CacheManager(scope: jsonURL, userDefaults: storage.make())
         )
     }
 
-    /// A cache handle for inspecting or seeding the same storage the service uses.
-    private func probeCache(_ storage: IsolatedDefaults) -> CacheManager {
-        CacheManager(userDefaults: storage.make())
+    /// A cache handle for inspecting or seeding the same storage and scope the
+    /// service uses.
+    private func probeCache(_ storage: IsolatedDefaults, scope: URL) -> CacheManager {
+        CacheManager(scope: scope, userDefaults: storage.make())
     }
 
     private var missingURL: URL {
@@ -183,15 +184,16 @@ struct PromoServiceLoadTests {
         #expect(service.apps.map(\.id) == ["finebill", "pocketstash"])
         #expect(service.error == nil)
         #expect(service.isLoading == false)
-        #expect(await probeCache(storage).load() == catalog)
+        #expect(await probeCache(storage, scope: url).load() == catalog)
     }
 
     @Test("Network failure falls back to cached data without surfacing an error")
     func networkFailureFallsBackToCache() async {
         let storage = IsolatedDefaults()
         defer { storage.remove() }
-        await probeCache(storage).save(Fixture.catalog(ids: ["host", "finebill"]))
-        let service = makeService(jsonURL: missingURL, storage: storage)
+        let url = missingURL
+        await probeCache(storage, scope: url).save(Fixture.catalog(ids: ["host", "finebill"]))
+        let service = makeService(jsonURL: url, storage: storage)
 
         await service.loadApps()
 
@@ -204,12 +206,13 @@ struct PromoServiceLoadTests {
     func expiredCacheStillServesAsFallback() async {
         let storage = IsolatedDefaults()
         defer { storage.remove() }
-        await probeCache(storage).save(Fixture.catalog(ids: ["host", "finebill"]))
+        let url = missingURL
+        await probeCache(storage, scope: url).save(Fixture.catalog(ids: ["host", "finebill"]))
         storage.make().set(
             Date().timeIntervalSince1970 - CacheManager.expirationInterval - 60,
-            forKey: CacheManager.CacheKeys.timestamp
+            forKey: probeCache(storage, scope: url).timestampKey
         )
-        let service = makeService(jsonURL: missingURL, storage: storage)
+        let service = makeService(jsonURL: url, storage: storage)
 
         await service.loadApps()
 
@@ -251,16 +254,16 @@ struct PromoServiceLoadTests {
     func forceRefreshOverwritesCache() async throws {
         let storage = IsolatedDefaults()
         defer { storage.remove() }
-        await probeCache(storage).save(Fixture.catalog(ids: ["host", "stale"]))
         let fresh = Fixture.catalog(ids: ["host", "finebill"])
         let url = try makeTemporaryFile(contents: try Fixture.json(for: fresh))
         defer { removeTemporaryFile(at: url) }
+        await probeCache(storage, scope: url).save(Fixture.catalog(ids: ["host", "stale"]))
         let service = makeService(jsonURL: url, storage: storage)
 
         await service.forceRefresh()
 
         #expect(service.apps.map(\.id) == ["finebill"])
-        #expect(await probeCache(storage).load() == fresh)
+        #expect(await probeCache(storage, scope: url).load() == fresh)
     }
 
     @Test("A failed forceRefresh leaves the cache intact")
@@ -268,13 +271,35 @@ struct PromoServiceLoadTests {
         let storage = IsolatedDefaults()
         defer { storage.remove() }
         let cached = Fixture.catalog(ids: ["host", "finebill"])
-        await probeCache(storage).save(cached)
-        let service = makeService(jsonURL: missingURL, storage: storage)
+        let url = missingURL
+        await probeCache(storage, scope: url).save(cached)
+        let service = makeService(jsonURL: url, storage: storage)
 
         await service.forceRefresh()
 
-        #expect(await probeCache(storage).load() == cached)
+        #expect(await probeCache(storage, scope: url).load() == cached)
         #expect(service.apps.map(\.id) == ["finebill"])
+    }
+
+    @Test("Two configurations in one app do not share cached catalogs")
+    func separateConfigurationsKeepSeparateCaches() async throws {
+        let storage = IsolatedDefaults()
+        defer { storage.remove() }
+        let catalogOne = Fixture.catalog(ids: ["host", "finebill"])
+        let urlOne = try makeTemporaryFile(contents: try Fixture.json(for: catalogOne))
+        defer { removeTemporaryFile(at: urlOne) }
+        let urlTwo = missingURL
+
+        // Service one fills its own cache from the network.
+        await makeService(jsonURL: urlOne, storage: storage).loadApps()
+        // Service two fails and must not pick up service one's catalog.
+        let serviceTwo = makeService(jsonURL: urlTwo, storage: storage)
+        await serviceTwo.loadApps()
+
+        #expect(serviceTwo.apps.isEmpty)
+        #expect(serviceTwo.error != nil)
+        #expect(await probeCache(storage, scope: urlOne).load() == catalogOne)
+        #expect(await probeCache(storage, scope: urlTwo).load() == nil)
     }
 }
 
