@@ -33,6 +33,15 @@ enum L10n {
     /// Button that opens the App Store app directly.
     static var overlayErrorOpenInAppStore: String { string("overlayError.openInAppStore") }
 
+    /// VoiceOver label for a promo app row, combining name, category and tagline
+    /// into one sentence.
+    static func promoRowLabel(name: String, category: String, tagline: String) -> String {
+        String(format: string("promoRow.accessibilityLabel"), locale: .current, name, category, tagline)
+    }
+
+    /// VoiceOver hint describing what activating a promo app row does.
+    static var promoRowHint: String { string("promoRow.accessibilityHint") }
+
     private static func string(_ key: String) -> String {
         String(localized: String.LocalizationValue(key), bundle: .module)
     }
