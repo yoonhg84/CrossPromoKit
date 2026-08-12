@@ -98,12 +98,17 @@ import SwiftUI
 import CrossPromoKit
 
 struct SettingsView: View {
+    private let config = PromoConfig(
+        jsonURL: URL(string: "https://your-domain.com/apps.json")!,
+        currentAppID: "myapp1"
+    )
+
     var body: some View {
         List {
             // Your other settings...
 
             Section("More Apps") {
-                MoreAppsView(currentAppID: "myapp1")
+                MoreAppsView(config: config)
             }
         }
     }
@@ -113,19 +118,6 @@ struct SettingsView: View {
 That's it! The current app is automatically excluded from the list.
 
 ## Advanced Usage
-
-### Custom Configuration
-
-```swift
-import CrossPromoKit
-
-let config = PromoConfig(
-    jsonURL: URL(string: "https://your-domain.com/apps.json")!,
-    currentAppID: "myapp1"
-)
-
-MoreAppsView(config: config)
-```
 
 ### Analytics Integration
 
@@ -176,14 +168,15 @@ In this example:
 The main SwiftUI view for displaying promotable apps.
 
 ```swift
-// Simple initialization
-MoreAppsView(currentAppID: String)
-
-// With custom config
+// Basic initialization
 MoreAppsView(config: PromoConfig)
 
 // With analytics
 MoreAppsView(config: PromoConfig, eventDelegate: PromoEventDelegate?)
+
+// With a force-refresh binding
+MoreAppsView(config: PromoConfig, forceRefresh: Binding<Bool>)
+MoreAppsView(config: PromoConfig, eventDelegate: PromoEventDelegate?, forceRefresh: Binding<Bool>)
 ```
 
 ### PromoConfig

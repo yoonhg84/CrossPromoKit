@@ -98,12 +98,17 @@ import SwiftUI
 import CrossPromoKit
 
 struct SettingsView: View {
+    private let config = PromoConfig(
+        jsonURL: URL(string: "https://your-domain.com/apps.json")!,
+        currentAppID: "myapp1"
+    )
+
     var body: some View {
         List {
             // 다른 설정 항목들...
 
             Section("더 많은 앱") {
-                MoreAppsView(currentAppID: "myapp1")
+                MoreAppsView(config: config)
             }
         }
     }
@@ -113,19 +118,6 @@ struct SettingsView: View {
 끝입니다! 현재 앱은 목록에서 자동으로 제외됩니다.
 
 ## 고급 사용법
-
-### 커스텀 구성
-
-```swift
-import CrossPromoKit
-
-let config = PromoConfig(
-    jsonURL: URL(string: "https://your-domain.com/apps.json")!,
-    currentAppID: "myapp1"
-)
-
-MoreAppsView(config: config)
-```
 
 ### 분석 연동
 
@@ -176,14 +168,15 @@ MoreAppsView(config: config, eventDelegate: handler)
 프로모션 앱을 표시하는 메인 SwiftUI 뷰입니다.
 
 ```swift
-// 간단한 초기화
-MoreAppsView(currentAppID: String)
-
-// 커스텀 구성
+// 기본 초기화
 MoreAppsView(config: PromoConfig)
 
 // 분석 연동
 MoreAppsView(config: PromoConfig, eventDelegate: PromoEventDelegate?)
+
+// 강제 새로고침 바인딩
+MoreAppsView(config: PromoConfig, forceRefresh: Binding<Bool>)
+MoreAppsView(config: PromoConfig, eventDelegate: PromoEventDelegate?, forceRefresh: Binding<Bool>)
 ```
 
 ### PromoConfig
