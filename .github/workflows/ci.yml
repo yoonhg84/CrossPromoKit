@@ -18,11 +18,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Install SwiftLint
+      # The pinned version lives in .swiftlint-version (single source of truth,
+      # shared with local runs). We download the release binary for that exact
+      # tag instead of `brew install` so a new SwiftLint release can never turn
+      # --strict red without a commit here.
+      - name: Install pinned SwiftLint
         run: |
           set -euo pipefail
-          command -v swiftlint >/dev/null || brew install swiftlint
-          swiftlint version
+          VERSION=$(tr -d '[:space:]' < .swiftlint-version)
+          echo "Pinned SwiftLint version: $VERSION"
+          DEST="$RUNNER_TEMP/swiftlint"
+          mkdir -p "$DEST"
+          curl -fsSL -o "$RUNNER_TEMP/portable_swiftlint.zip" \
+            "https://github.com/realm/SwiftLint/releases/download/$VERSION/portable_swiftlint.zip"
+          unzip -q -o "$RUNNER_TEMP/portable_swiftlint.zip" -d "$DEST"
+          chmod +x "$DEST/swiftlint"
+          # Prepended to PATH, so it wins over any SwiftLint preinstalled on the runner image.
+          echo "$DEST" >> "$GITHUB_PATH"
+          echo "SWIFTLINT_VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Verify SwiftLint version
+        run: |
+          set -euo pipefail
+          echo "which: $(command -v swiftlint)"
+          ACTUAL=$(swiftlint version)
+          echo "swiftlint version: $ACTUAL (expected $SWIFTLINT_VERSION)"
+          [ "$ACTUAL" = "$SWIFTLINT_VERSION" ]
 
       - name: Lint
         # --strict fails the job on warnings; the repo is warning-free as of #22
