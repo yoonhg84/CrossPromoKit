@@ -1,6 +1,38 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "A valid cache is used without any fetch. Force Refresh always fetches, keeping the old cache as a fallback if the fetch fails; Clear Cache removes that fallback." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効なキャッシュがあれば取得は行われません。強制更新は常に取得し、失敗したときのフォールバックとして既存のキャッシュを残します。キャッシュを消去するとそのフォールバックがなくなります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캐시가 유효하면 가져오기를 하지 않습니다. 강제 새로고침은 항상 가져오며 실패에 대비해 기존 캐시를 남겨 둡니다. 캐시 지우기는 그 폴백을 없앱니다."
+          }
+        }
+      }
+    },
+    "Bump File Version" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ファイルのバージョンを上げる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파일 버전 올리기"
+          }
+        }
+      }
+    },
     "Cache" : {
       "localizations" : {
         "ja" : {
@@ -17,34 +49,82 @@
         }
       }
     },
-    "Change the demo state to test different UI scenarios for screenshots." : {
+    "Catalog file" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "スクリーンショット用に異なるUIシナリオをテストするためにデモ状態を変更してください。"
+            "value" : "カタログファイル"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스크린샷을 위해 다양한 UI 시나리오를 테스트하려면 데모 상태를 변경하세요."
+            "value" : "카탈로그 파일"
           }
         }
       }
     },
-    "Check back later for more apps from the developer." : {
+    "Catalog File" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "後でもう一度確認してください。"
+            "value" : "カタログファイル"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "나중에 다시 확인해 주세요."
+            "value" : "카탈로그 파일"
+          }
+        }
+      }
+    },
+    "Catalog URL" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カタログURL"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 URL"
+          }
+        }
+      }
+    },
+    "Clear Cache" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャッシュを消去"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캐시 지우기"
+          }
+        }
+      }
+    },
+    "Clear Events" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "イベントを消去"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이벤트 지우기"
           }
         }
       }
@@ -97,6 +177,22 @@
         }
       }
     },
+    "Delete Catalog File" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カタログファイルを削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 파일 삭제"
+          }
+        }
+      }
+    },
     "Demo Configuration" : {
       "localizations" : {
         "ja" : {
@@ -113,50 +209,18 @@
         }
       }
     },
-    "Demo State" : {
+    "Each scenario hands the package a different PromoConfig. The list, the spinner and both empty states are drawn by the package itself." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "デモ状態"
+            "value" : "各シナリオはパッケージに異なる PromoConfig を渡します。リストもインジケーターも2種類の空状態も、すべてパッケージ自身が描画します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "데모 상태"
-          }
-        }
-      }
-    },
-    "demo-apps.json not found" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "demo-apps.jsonが見つかりません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "demo-apps.json을 찾을 수 없습니다"
-          }
-        }
-      }
-    },
-    "Empty" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "空"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "비어있음"
+            "value" : "각 시나리오는 패키지에 서로 다른 PromoConfig를 전달합니다. 목록, 로딩 표시기, 두 가지 빈 상태 모두 패키지가 직접 그립니다."
           }
         }
       }
@@ -183,34 +247,40 @@
         }
       }
     },
-    "Error" : {
+    "Empty catalog" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empty catalog"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "エラー"
+            "value" : "空のカタログ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "오류"
+            "value" : "빈 카탈로그"
           }
         }
       }
     },
-    "Excluded from list" : {
+    "Events" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "リストから除外"
+            "value" : "イベント"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "목록에서 제외됨"
+            "value" : "이벤트"
           }
         }
       }
@@ -253,56 +323,131 @@
         }
       }
     },
-    "Force refresh clears the cache and reloads data from the JSON file." : {
+    "https://example.com/apps.json" : {
+      "comment" : "Placeholder of the remote catalog URL field; an example URL rather than prose.",
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "強制更新はキャッシュをクリアし、JSONファイルからデータを再読み込みします。"
+            "value" : "https://example.com/apps.json"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "강제 새로고침은 캐시를 지우고 JSON 파일에서 데이터를 다시 로드합니다."
+            "value" : "https://example.com/apps.json"
           }
         }
       }
     },
-    "Loaded" : {
+    "Icons over HTTPS: one loads, one 404s and one has an unresolvable host, so both failures fall back to the package placeholder." : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Loaded"
-          }
-        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "読み込み済み"
+            "value" : "HTTPS のアイコン: 1つは読み込まれ、1つは404、1つはホストが解決できません。失敗した2つはパッケージのプレースホルダーになります。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "로드됨"
+            "value" : "HTTPS 아이콘: 하나는 로드되고, 하나는 404, 하나는 호스트를 찾을 수 없습니다. 실패한 둘은 패키지의 플레이스홀더로 대체됩니다."
           }
         }
       }
     },
-    "Loading" : {
+    "Impression" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "読み込み中"
+            "value" : "インプレッション"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "로딩 중"
+            "value" : "노출"
+          }
+        }
+      }
+    },
+    "Impressions and taps reported through PromoEventDelegate, newest first." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PromoEventDelegate から届いたインプレッションとタップを、新しい順に表示します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PromoEventDelegate로 전달된 노출과 탭을 최신순으로 보여줍니다."
+          }
+        }
+      }
+    },
+    "Language Settings switches this app alone, without a rebuild, when iOS offers the row for it. Otherwise use Edit Scheme → Run → Options → App Language." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS が言語の項目を表示する場合、設定からこのアプリだけの言語を再ビルドなしで切り替えられます。表示されない場合はスキームを編集 → 実行 → オプション → アプリの言語を使ってください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS가 언어 항목을 제공하면 설정에서 이 앱만 다시 빌드 없이 언어를 바꿀 수 있습니다. 항목이 없으면 스킴 편집 → 실행 → 옵션 → 앱 언어를 사용하세요."
+          }
+        }
+      }
+    },
+    "Load Remote URL" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リモートURLを読み込む"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원격 URL 불러오기"
+          }
+        }
+      }
+    },
+    "Loads the editable copy of demo-apps.json. Compare the Catalog v… row with the file version below to see whether the list came from the cache or from a fresh read." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "編集可能な demo-apps.json のコピーを読み込みます。リストの「Catalog v…」行と下のファイルバージョンを見比べると、キャッシュから来たのか読み直したのかが分かります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "편집 가능한 demo-apps.json 복사본을 로드합니다. 목록의 'Catalog v…' 행과 아래 파일 버전을 비교하면 캐시에서 왔는지 새로 읽었는지 알 수 있습니다."
+          }
+        }
+      }
+    },
+    "Loads the HTTPS URL entered below. Try a 404, a non-JSON page, or turn the network off to watch the fallback tiers." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下に入力した HTTPS URL を読み込みます。404、JSON でないページ、機内モードなどでフォールバックの各段階を確認できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아래에 입력한 HTTPS URL을 로드합니다. 404, JSON이 아닌 페이지, 네트워크 차단으로 폴백 단계를 확인해 보세요."
           }
         }
       }
@@ -323,6 +468,22 @@
         }
       }
     },
+    "Missing" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "なし"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "없음"
+          }
+        }
+      }
+    },
     "More Apps" : {
       "localizations" : {
         "ja" : {
@@ -339,25 +500,91 @@
         }
       }
     },
-    "No apps available" : {
+    "No catalog URL yet. Enter one in the Debug tab." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "利用可能なアプリがありません"
+            "value" : "カタログURLがまだありません。デバッグタブで入力してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사용 가능한 앱이 없습니다"
+            "value" : "아직 카탈로그 URL이 없습니다. 디버그 탭에서 입력하세요."
           }
         }
       }
     },
-    "photomagic" : {
-      "comment" : "The name of the current app, used in the \"Current App ID\" label of the Debug View.",
-      "isCommentAutoGenerated" : true
+    "No events yet." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まだイベントはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 이벤트가 없습니다."
+          }
+        }
+      }
+    },
+    "Normal catalog" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal catalog"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通常のカタログ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "정상 카탈로그"
+          }
+        }
+      }
+    },
+    "Only affects the Normal catalog scenario. Bump the version, then compare the Catalog v… row in the list: an old number means the cache answered, a new one means the file was read. Deleting the file makes fetches fail without changing the URL, so the cache can still stand in for them." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「通常のカタログ」シナリオにのみ影響します。バージョンを上げてからリストの「Catalog v…」行を見比べてください。古い番号ならキャッシュ、新しい番号ならファイルを読み直した結果です。ファイルを削除すると URL は変えずに取得だけが失敗するので、キャッシュがフォールバックとして働きます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'정상 카탈로그' 시나리오에만 영향을 줍니다. 버전을 올린 뒤 목록의 'Catalog v…' 행을 비교하세요. 이전 번호면 캐시가, 새 번호면 파일이 응답한 것입니다. 파일을 삭제하면 URL은 그대로 둔 채 가져오기만 실패하므로 캐시가 폴백으로 동작합니다."
+          }
+        }
+      }
+    },
+    "Open Language Settings" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言語設定を開く"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "언어 설정 열기"
+          }
+        }
+      }
     },
     "PhotoMagic is set as the current app, so it won't appear in the promotion list." : {
       "localizations" : {
@@ -375,18 +602,132 @@
         }
       }
     },
-    "Retry" : {
+    "Promo rules" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Promo rules"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "再試行"
+            "value" : "プロモルール"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다시 시도"
+            "value" : "프로모 규칙"
+          }
+        }
+      }
+    },
+    "promoRules allows photomagic to promote only WeatherPal and BudgetWise, so the other apps are filtered out of a five-app catalog." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "promoRules により photomagic が宣伝できるのは WeatherPal と BudgetWise だけなので、5件のカタログから他のアプリが除外されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "promoRules가 photomagic에 WeatherPal과 BudgetWise만 허용하므로 5개짜리 카탈로그에서 나머지가 걸러집니다."
+          }
+        }
+      }
+    },
+    "Remote Catalog" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リモートカタログ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원격 카탈로그"
+          }
+        }
+      }
+    },
+    "Remote icons" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remote icons"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リモートアイコン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원격 아이콘"
+          }
+        }
+      }
+    },
+    "Remote URL" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remote URL"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リモートURL"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원격 URL"
+          }
+        }
+      }
+    },
+    "Restore Catalog File" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カタログファイルを復元"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 파일 복구"
+          }
+        }
+      }
+    },
+    "Scenario" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "シナリオ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시나리오"
           }
         }
       }
@@ -407,104 +748,24 @@
         }
       }
     },
-    "Shows empty state" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "空の状態を表示"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "비어있는 상태 표시"
-          }
-        }
-      }
-    },
-    "Shows error message" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "エラーメッセージを表示"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "오류 메시지 표시"
-          }
-        }
-      }
-    },
-    "Shows loading indicator" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "読み込みインジケーターを表示"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "로딩 표시기 표시"
-          }
-        }
-      }
-    },
-    "Shows the loaded state with app list" : {
+    "Stalled request" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shows the loaded state with app list"
+            "value" : "Stalled request"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "読み込み済みの状態とアプリリストを表示"
+            "value" : "応答しないリクエスト"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "로드된 상태와 앱 목록 표시"
-          }
-        }
-      }
-    },
-    "Something went wrong" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "問題が発生しました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "문제가 발생했습니다"
-          }
-        }
-      }
-    },
-    "State Testing" : {
-      "localizations" : {
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "状態テスト"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "상태 테스트"
+            "value" : "응답 없는 요청"
           }
         }
       }
@@ -525,72 +786,126 @@
         }
       }
     },
-    "To test different languages:\n1. Edit Scheme → Run → Options\n2. Set App Language to Korean or Japanese\n3. Run the app" : {
+    "Switches to the Remote URL scenario. A URL that 404s, one that returns HTML instead of JSON, and airplane mode each exercise a different failure path." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "異なる言語をテストするには：\n1. スキームを編集 → 実行 → オプション\n2. アプリの言語を韓国語または日本語に設定\n3. アプリを実行"
+            "value" : "「リモートURL」シナリオに切り替えます。404 になる URL、JSON ではなく HTML を返す URL、機内モードで、それぞれ異なる失敗経路を確認できます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다른 언어를 테스트하려면:\n1. 스킴 편집 → 실행 → 옵션\n2. 앱 언어를 한국어 또는 일본어로 설정\n3. 앱 실행"
+            "value" : "'원격 URL' 시나리오로 전환합니다. 404가 나는 URL, JSON 대신 HTML을 주는 URL, 비행기 모드가 각각 다른 실패 경로를 확인시켜 줍니다."
           }
         }
       }
     },
-    "Try Again" : {
+    "Tap" : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "再試行"
+            "value" : "タップ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다시 시도"
+            "value" : "탭"
           }
         }
       }
     },
-    "Unable to load apps. Please try again later." : {
+    "The catalog parses but holds no apps, so the package renders its own EmptyStateView.noApps." : {
       "localizations" : {
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アプリを読み込めませんでした。後でもう一度お試しください。"
+            "value" : "カタログは読めますがアプリが1件もないため、パッケージ自身の EmptyStateView.noApps が表示されます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱을 로드할 수 없습니다. 나중에 다시 시도해 주세요."
+            "value" : "카탈로그는 읽히지만 앱이 없어서 패키지의 EmptyStateView.noApps가 표시됩니다."
           }
         }
       }
     },
-    "Unavailable (demo-apps.json not found)" : {
+    "The catalog URL does not exist and nothing is cached for it, so the package renders its own EmptyStateView.offline." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カタログURLが存在せずキャッシュもないため、パッケージ自身の EmptyStateView.offline が表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 URL이 존재하지 않고 캐시도 없어서 패키지의 EmptyStateView.offline이 표시됩니다."
+          }
+        }
+      }
+    },
+    "The request goes to an unroutable address and hangs, so the package keeps showing its own loading indicator until the request times out." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "到達できないアドレスへのリクエストが応答しないため、タイムアウトするまでパッケージ自身の読み込みインジケーターが表示され続けます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "도달할 수 없는 주소로 요청이 나가 응답이 없으므로, 타임아웃될 때까지 패키지의 로딩 표시기가 계속 보입니다."
+          }
+        }
+      }
+    },
+    "Unavailable (no catalog URL)" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unavailable (demo-apps.json not found)"
+            "value" : "Unavailable (no catalog URL)"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "利用不可 (demo-apps.jsonが見つかりません)"
+            "value" : "利用不可 (カタログURLなし)"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사용 불가 (demo-apps.json을 찾을 수 없음)"
+            "value" : "사용 불가 (카탈로그 URL 없음)"
+          }
+        }
+      }
+    },
+    "Unreachable catalog" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unreachable catalog"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "到達できないカタログ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "접근 불가 카탈로그"
           }
         }
       }
@@ -613,6 +928,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "유효함 (%@ 캐시됨)"
+          }
+        }
+      }
+    },
+    "Version %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version %lld"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バージョン %lld"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "버전 %lld"
           }
         }
       }

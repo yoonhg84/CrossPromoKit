@@ -1,80 +1,51 @@
-import SwiftUI
 import CrossPromoKit
+import SwiftUI
 
+/// A host app's settings screen with the promo list embedded in it.
+///
+/// There is exactly one branch here — whether a catalog URL exists at all. Every
+/// other outcome (list, spinner, "no apps", "offline") is drawn by the package
+/// from the `PromoConfig` it was handed, so this screen shows package behaviour
+/// rather than the demo's impression of it.
 struct SettingsView: View {
     @Environment(DemoViewModel.self) private var viewModel
-    // `PromoService` holds `eventDelegate` weakly, so the handler needs an owner
-    // that outlives the view value. `@State` ties it to the view's identity.
-    @State private var eventHandler = DemoEventHandler()
 
     var body: some View {
+        @Bindable var viewModel = viewModel
+
         NavigationStack {
             List {
                 Section {
-                    moreAppsContent
+                    if let config = viewModel.config {
+                        MoreAppsView(
+                            config: config,
+                            eventDelegate: viewModel.eventHandler,
+                            forceRefresh: $viewModel.forceRefreshRequested
+                        )
+                    } else {
+                        Text("No catalog URL yet. Enter one in the Debug tab.")
+                            .foregroundStyle(.secondary)
+                    }
                 } header: {
                     Text("More Apps")
+                } footer: {
+                    Text(viewModel.scenario.explanation)
                 }
             }
             .navigationTitle("Settings")
-        }
-    }
-
-    @ViewBuilder
-    private var moreAppsContent: some View {
-        switch viewModel.demoState {
-        case .loaded:
-            if let url = Bundle.main.url(forResource: "demo-apps", withExtension: "json") {
-                let config = PromoConfig(jsonURL: url, currentAppID: "photomagic")
-                MoreAppsView(config: config, eventDelegate: eventHandler)
-            } else {
-                Text("demo-apps.json not found")
-                    .foregroundStyle(.secondary)
+            .refreshable {
+                await viewModel.forceRefreshAndWait()
             }
-        case .loading:
-            HStack {
-                Spacer()
-                ProgressView()
-                    .progressViewStyle(.circular)
-                Spacer()
-            }
-            .padding(.vertical, 24)
-        case .empty:
-            VStack(spacing: 12) {
-                Image(systemName: "app.badge")
-                    .font(.largeTitle)
-                    .foregroundStyle(.secondary)
-                Text("No apps available")
-                    .font(.headline)
-                Text("Check back later for more apps from the developer.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                Button("Try Again") {
-                    viewModel.demoState = .loaded
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        Task { await viewModel.forceRefreshAndWait() }
+                    } label: {
+                        Image(systemName: "arrow.clockwise")
+                    }
+                    .accessibilityLabel(Text("Force Refresh"))
                 }
-                .buttonStyle(.bordered)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 24)
-        case .error:
-            VStack(spacing: 12) {
-                Image(systemName: "exclamationmark.triangle")
-                    .font(.largeTitle)
-                    .foregroundStyle(.orange)
-                Text("Something went wrong")
-                    .font(.headline)
-                Text("Unable to load apps. Please try again later.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                Button("Retry") {
-                    viewModel.demoState = .loaded
-                }
-                .buttonStyle(.bordered)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 24)
         }
     }
 }
