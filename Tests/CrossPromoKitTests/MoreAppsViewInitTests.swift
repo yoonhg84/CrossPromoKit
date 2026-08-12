@@ -36,9 +36,9 @@ struct MoreAppsViewInitTests {
         let view = MoreAppsView(config: config, eventDelegate: delegate)
 
         // What `task` stores in @State is exactly what this returns.
-        let service = view.prepareService(existing: nil)
+        let retained = view.prepareService(existing: nil)
 
-        #expect(service.eventDelegate === delegate)
+        #expect(retained.service.eventDelegate === delegate)
     }
 
     @Test("A delegate passed after the first pass is attached to the same service")
@@ -51,8 +51,8 @@ struct MoreAppsViewInitTests {
         let second = InitProbeDelegate()
         let reused = MoreAppsView(config: config, eventDelegate: second).prepareService(existing: retained)
 
-        #expect(reused === retained)
-        #expect(reused.eventDelegate === second)
+        #expect(reused.service === retained.service)
+        #expect(reused.service.eventDelegate === second)
     }
 
     @Test("Dropping the delegate detaches it from the retained service")
@@ -62,30 +62,73 @@ struct MoreAppsViewInitTests {
 
         let reused = MoreAppsView(config: config).prepareService(existing: retained)
 
-        #expect(reused === retained)
-        #expect(reused.eventDelegate == nil)
+        #expect(reused.service === retained.service)
+        #expect(reused.service.eventDelegate == nil)
     }
 
-    @Test("Repeated passes reuse the service instead of rebuilding it")
+    @Test("Repeated passes with the same config reuse the service")
     func serviceIsBuiltOnce() {
         let view = MoreAppsView(config: config)
         let first = view.prepareService(existing: nil)
 
         let again = view.prepareService(existing: first)
-        let third = MoreAppsView(config: config).prepareService(existing: again)
+        // An equal config built separately still counts as the same one.
+        let equalConfig = PromoConfig(
+            jsonURL: URL(string: "https://example.com/apps.json")!,
+            currentAppID: "host"
+        )
+        let third = MoreAppsView(config: equalConfig).prepareService(existing: again)
 
-        #expect(again === first)
-        #expect(third === first)
+        #expect(again.service === first.service)
+        #expect(third.service === first.service)
     }
 
     @Test("The service the view builds carries the given config")
     func serviceCarriesTheGivenConfig() {
         let view = MoreAppsView(config: config)
 
-        let service = view.prepareService(existing: nil)
+        let retained = view.prepareService(existing: nil)
 
         // No network here: filtering is the observable side of the config.
-        let filtered = service.filterApps(from: Fixture.catalog(ids: ["host", "finebill"]))
+        let filtered = retained.service.filterApps(from: Fixture.catalog(ids: ["host", "finebill"]))
         #expect(filtered.map(\.id) == ["finebill"])
+    }
+
+    @Test("A config with a different app ID rebuilds the service around it")
+    func changedAppIDRebuildsTheService() {
+        let retained = MoreAppsView(config: config).prepareService(existing: nil)
+
+        let other = PromoConfig(jsonURL: config.jsonURL, currentAppID: "finebill")
+        let rebuilt = MoreAppsView(config: other).prepareService(existing: retained)
+
+        #expect(rebuilt.service !== retained.service)
+        // The new config decides the catalog: "finebill" is now the host to hide.
+        let filtered = rebuilt.service.filterApps(from: Fixture.catalog(ids: ["host", "finebill"]))
+        #expect(filtered.map(\.id) == ["host"])
+    }
+
+    @Test("A config with a different JSON URL rebuilds the service around it")
+    func changedJSONURLRebuildsTheService() {
+        let retained = MoreAppsView(config: config).prepareService(existing: nil)
+
+        let other = PromoConfig(
+            jsonURL: URL(string: "https://example.com/other-apps.json")!,
+            currentAppID: config.currentAppID
+        )
+        let rebuilt = MoreAppsView(config: other).prepareService(existing: retained)
+
+        #expect(rebuilt.service !== retained.service)
+    }
+
+    @Test("A rebuilt service still gets the current delegate")
+    func rebuiltServiceKeepsTheDelegate() {
+        let delegate = InitProbeDelegate()
+        let retained = MoreAppsView(config: config, eventDelegate: delegate).prepareService(existing: nil)
+
+        let other = PromoConfig(jsonURL: config.jsonURL, currentAppID: "finebill")
+        let rebuilt = MoreAppsView(config: other, eventDelegate: delegate).prepareService(existing: retained)
+
+        #expect(rebuilt.service !== retained.service)
+        #expect(rebuilt.service.eventDelegate === delegate)
     }
 }
