@@ -1,6 +1,6 @@
+@testable import CrossPromoKit
 import Foundation
 import Testing
-@testable import CrossPromoKit
 
 /// Verifies the bundled String Catalog is actually processed into `Bundle.module`
 /// and that every UI string resolves to a translation rather than falling back to its key.
@@ -17,7 +17,7 @@ struct L10nTests {
         "overlayError.message",
         "overlayError.openInAppStore",
         "promoRow.accessibilityLabel",
-        "promoRow.accessibilityHint",
+        "promoRow.accessibilityHint"
     ]
 
     @Test("every key resolves in en, ko and ja")
@@ -44,7 +44,7 @@ struct L10nTests {
             L10n.offlineTitle, L10n.offlineMessage,
             L10n.overlayErrorTitle, L10n.overlayErrorMessage, L10n.overlayErrorOpenInAppStore,
             L10n.promoRowLabel(name: "FineBill", category: "Finance", tagline: "Track bills"),
-            L10n.promoRowHint,
+            L10n.promoRowHint
         ]
         #expect(values.count == Self.keys.count)
         for (value, key) in zip(values, Self.keys) {
