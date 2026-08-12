@@ -143,11 +143,16 @@ struct PromoServiceConcurrencyTests {
     }
 
     /// Polls `condition` on the main actor, failing rather than hanging forever.
+    ///
+    /// The deadline is a hang guard, not a performance budget: a passing run
+    /// proceeds the moment the condition holds, so a generous value costs
+    /// nothing and keeps a slow, loaded CI runner from being mistaken for a
+    /// deadlock.
     private func waitUntil(
         _ description: Comment,
         _ condition: () -> Bool
     ) async throws {
-        let deadline = ContinuousClock.now + .seconds(5)
+        let deadline = ContinuousClock.now + .seconds(30)
         while !condition() {
             guard ContinuousClock.now < deadline else {
                 Issue.record("Timed out waiting for \(description)")
@@ -170,6 +175,9 @@ struct PromoServiceConcurrencyTests {
 
         let load = Task { await service.loadApps() }
         try await waitUntil("the first load to start") { service.isLoading }
+        // Make sure the first fetch is the one sitting in the gate before the
+        // refresh is started, so the two requests cannot be served out of order.
+        try await waitUntil("the first fetch to reach the stub") { responder.requestCount == 1 }
 
         // Started while the first fetch is still held open by the gate.
         let sawLoadInFlight = ObservedFlag()
@@ -200,6 +208,10 @@ struct PromoServiceConcurrencyTests {
 
         let load = Task { await service.loadApps() }
         try await waitUntil("the first load to start") { service.isLoading }
+        // `isLoading` flips before URLSession hands the request to the protocol,
+        // so wait for the request to actually arrive. Otherwise the count below
+        // races the loader thread and reads 0 on a slow machine.
+        try await waitUntil("the first fetch to reach the stub") { responder.requestCount == 1 }
 
         // Returns immediately without waiting for, or duplicating, the fetch.
         await service.loadApps()
