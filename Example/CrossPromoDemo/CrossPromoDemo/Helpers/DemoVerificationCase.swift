@@ -110,9 +110,9 @@ enum DemoVerificationCase: String, CaseIterable, Identifiable {
         case .cacheScope:
             return "Two catalog URLs in one app keep independent cache entries, so loading one must not overwrite or answer for the other."
         case .configSwap:
-            return "Run \"Host app excluded\" first and look at its list, then come back and run this one. It hands the live promo view a different PromoConfig without rebuilding the view, which is the one thing that made the old catalog stick around."
+            return "Run \"Host app excluded\" first and look at its list, then pick this one from the case menu. It hands the live promo view a different PromoConfig without rebuilding the view, which is the one thing that made the old catalog stick around."
         case .events:
-            return "Open the list, scroll the rows out of view and back a few times, then tap one row and come back here."
+            return "Scroll the rows above out of view and back a few times, then tap one row. The readings below re-read themselves as the events arrive."
         case .overlay:
             return "In the simulator SKOverlay usually cannot present, so the package falls back to its own \"Open in App Store\" alert. On a simulator that alert is the pass, not a failure."
         case .accessibility:
@@ -279,11 +279,6 @@ enum DemoVerificationCase: String, CaseIterable, Identifiable {
             return [.expectedRows, .renderedRows]
         }
     }
-
-    /// Where the check happens, so the setup can land there.
-    var destination: DemoTab {
-        .settings
-    }
 }
 
 /// One step of a case's setup.
@@ -330,11 +325,4 @@ enum DemoCaseAction: Equatable {
         case .remountList: return "Rebuild the promo view, as reopening the screen would"
         }
     }
-}
-
-/// A tab of the demo, so a case can send the person to the screen it is about.
-enum DemoTab: String, Hashable, CaseIterable {
-    case settings
-    case cases
-    case debug
 }

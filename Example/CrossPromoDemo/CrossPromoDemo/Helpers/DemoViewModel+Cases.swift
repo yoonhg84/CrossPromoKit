@@ -20,6 +20,29 @@ struct DemoCaseRun {
 }
 
 extension DemoViewModel {
+    // MARK: - Choosing a case
+
+    /// Opens a case's panel and performs its setup.
+    ///
+    /// One step rather than two because the menu sits on the screen the case is
+    /// checked on: there is nothing to travel to between picking and running.
+    /// - Parameter verificationCase: The case to show and set up.
+    func select(_ verificationCase: DemoVerificationCase) async {
+        selectedCase = verificationCase
+        await run(verificationCase)
+    }
+
+    /// Closes the panel and forgets the last run.
+    ///
+    /// The app is left in whatever state the setup put it in — the promo list
+    /// keeps showing what the case produced, which is the thing worth looking
+    /// at. Only the readings go away, because a reading kept next to no case is
+    /// a claim about nothing.
+    func clearCase() {
+        selectedCase = nil
+        caseRun = nil
+    }
+
     // MARK: - Running a case
 
     /// Performs every setup step of a case, in order, then takes a first
@@ -356,7 +379,7 @@ extension DemoViewModel {
     // MARK: - Shared phrasing
 
     private var waitingForTheList: LocalizedStringResource {
-        "Nothing to judge yet — the package has not reported rendering anything since the setup. Open the list and come back."
+        "Nothing to judge yet — the package has not reported rendering anything since the setup. The list is right above; this row re-reads itself as its rows appear."
     }
 
     private var noCatalogURL: LocalizedStringResource {
