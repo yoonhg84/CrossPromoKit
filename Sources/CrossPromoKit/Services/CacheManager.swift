@@ -7,7 +7,7 @@ import Foundation
 /// Cache keys are scoped to the catalog URL the data came from, so two
 /// ``PromoConfig`` values in the same app keep independent caches instead of
 /// overwriting each other.
-public actor CacheManager: Sendable {
+public actor CacheManager {
     // MARK: - Constants
 
     /// Keys written by versions that cached under a single global key, and the

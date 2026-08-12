@@ -41,9 +41,12 @@ xcodebuild test -scheme CrossPromoKit -destination 'platform=iOS Simulator,name=
 xcodebuild -scheme CrossPromoDemo -destination 'platform=iOS Simulator,name=iPhone 17' build
 ```
 
-Lint config lives in `.swiftlint.yml` (covers `Sources` only, `Tests` excluded).
-SwiftLint is not necessarily installed locally; if available, run `swiftlint` from
-the repo root.
+```bash
+# Lint (config: .swiftlint.yml, covers Sources only; brew install swiftlint)
+swiftlint lint --strict
+```
+
+CI runs the same `--strict` invocation, so any warning fails the build.
 
 ## Code Style
 

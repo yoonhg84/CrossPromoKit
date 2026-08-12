@@ -10,6 +10,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lint:
+    name: SwiftLint
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install SwiftLint
+        run: |
+          set -euo pipefail
+          command -v swiftlint >/dev/null || brew install swiftlint
+          swiftlint version
+
+      - name: Lint
+        # --strict fails the job on warnings; the repo is warning-free as of #22
+        run: swiftlint lint --strict --quiet
+
   build-and-test:
     name: Build & Test (iOS Simulator)
     runs-on: macos-15

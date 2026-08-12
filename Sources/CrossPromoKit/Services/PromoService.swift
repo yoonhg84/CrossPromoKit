@@ -5,7 +5,7 @@ import SwiftUI
 /// Handles fetching, caching, and filtering of promotable apps.
 @MainActor
 @Observable
-public final class PromoService: Sendable {
+public final class PromoService {
     // MARK: - Public Properties
 
     /// Current list of filtered apps to display
