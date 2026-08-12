@@ -3,14 +3,17 @@ import SwiftUI
 /// Main view for displaying the list of promotable FinePocket apps.
 /// Embed this in your settings screen or anywhere you want to show cross-promotions.
 public struct MoreAppsView: View {
-    /// The service the view keeps for its whole lifetime.
+    /// The service the view keeps, paired with the config it was built for.
     ///
     /// Built on the first `task` rather than in `init`: SwiftUI re-runs `init`
     /// on every parent re-evaluation, and `@State` keeps only the first value,
     /// so building it there threw away a `PromoService` — and the `CacheManager`
     /// it creates — on every pass.
-    @State private var service: PromoService?
+    @State private var retained: RetainedService?
     @Binding private var forceRefresh: Bool
+
+    /// The service currently retained, if one has been built.
+    private var service: PromoService? { retained?.service }
 
     private let config: PromoConfig
     /// Held weakly to match ``PromoService/eventDelegate``, so embedding this
@@ -45,14 +48,19 @@ public struct MoreAppsView: View {
             }
         }
         .task {
-            let service = prepareService(existing: service)
-            self.service = service
-            await service.loadApps()
+            let prepared = prepareService(existing: retained)
+            retained = prepared
+            await prepared.service.loadApps()
         }
-        .onChange(of: delegateIdentity) { _, _ in
-            // `task` does not re-run for a re-evaluated parent, so a delegate
-            // swapped in after the first pass has to be re-attached here.
-            service?.eventDelegate = eventDelegate
+        .onChange(of: serviceInputs) { _, _ in
+            // `task` does not re-run for a re-evaluated parent, so inputs
+            // swapped in after the first pass have to reach the service here:
+            // a new delegate is re-attached, a new config rebuilds the service.
+            let previous = retained?.service
+            let prepared = prepareService(existing: retained)
+            retained = prepared
+            guard prepared.service !== previous else { return }
+            Task { await prepared.service.loadApps() }
         }
         .onDisappear {
             // The overlay belongs to the window scene, not to this view, so it
@@ -89,24 +97,49 @@ public struct MoreAppsView: View {
 
     // MARK: - Service Lifetime
 
-    /// Identity of the current delegate, so `onChange` can spot a swap without
-    /// requiring `PromoEventDelegate` to be `Equatable`.
-    private var delegateIdentity: ObjectIdentifier? {
-        eventDelegate.map { ObjectIdentifier($0) }
+    /// A service together with the configuration it was built from.
+    ///
+    /// The config travels alongside because ``PromoService`` keeps its own
+    /// copy private, so the view could not otherwise tell whether the service
+    /// it retains still matches the config it is being asked to show.
+    struct RetainedService {
+        let service: PromoService
+        let config: PromoConfig
+    }
+
+    /// Everything the retained service is derived from.
+    ///
+    /// One value so a single `onChange` covers both: the delegate is compared
+    /// by identity, since `PromoEventDelegate` is not `Equatable`.
+    private var serviceInputs: ServiceInputs {
+        ServiceInputs(config: config, delegate: eventDelegate.map { ObjectIdentifier($0) })
+    }
+
+    /// Identity of the inputs a retained service depends on.
+    private struct ServiceInputs: Equatable {
+        let config: PromoConfig
+        let delegate: ObjectIdentifier?
     }
 
     /// Returns the service the view should keep, attaching the current delegate.
     ///
-    /// The service is created once and then reused: `existing` is returned
-    /// unchanged apart from its delegate, so repeated `task` runs (a view that
-    /// disappears and comes back) neither rebuild the service nor drop its
-    /// loaded apps.
+    /// The service is reused as long as the config it was built from still
+    /// matches, so repeated `task` runs (a view that disappears and comes back)
+    /// neither rebuild the service nor drop its loaded apps. A different config
+    /// does force a rebuild: the catalog URL and the excluded app ID are read at
+    /// construction time — including by the cache, which is scoped to
+    /// `jsonURL` — so reusing the old service would keep showing the old
+    /// catalog.
     /// - Parameter existing: The service already retained by this view, if any.
-    /// - Returns: The service to store and load from.
-    func prepareService(existing: PromoService?) -> PromoService {
-        let service = existing ?? PromoService(config: config)
+    /// - Returns: The service to store and load from, with its config.
+    func prepareService(existing: RetainedService?) -> RetainedService {
+        if let existing, existing.config == config {
+            existing.service.eventDelegate = eventDelegate
+            return existing
+        }
+        let service = PromoService(config: config)
         service.eventDelegate = eventDelegate
-        return service
+        return RetainedService(service: service, config: config)
     }
 
     // MARK: - Subviews
