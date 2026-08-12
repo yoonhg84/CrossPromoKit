@@ -24,28 +24,34 @@ final class DemoViewModel {
     /// drawn, for the same reason.
     ///
     /// `xcrun simctl launch <udid> com.finepocket.CrossPromoDemo -demoCase staleFallback`
-    /// performs every step of that case and lands on the screen it is checked
-    /// on, so a case that needs four ordered operations can be captured without
-    /// tapping through them.
+    /// performs every step of that case and opens its panel under the list, so a
+    /// case that needs four ordered operations can be captured without tapping
+    /// through them.
     private static let caseArgumentKey = "demoCase"
 
-    /// Launch argument that forces which tab is shown, overriding the tab a
-    /// `-demoCase` would otherwise land on: `-demoTab cases`.
+    /// Launch argument that forces which tab is shown: `-demoTab debug`.
+    ///
+    /// Only ``DemoTab``'s own raw values parse. `cases` was one of them until the
+    /// case panel moved onto the list screen; it now falls through to
+    /// ``DemoTab/settings``, which is where a case is both run and read.
     private static let tabArgumentKey = "demoTab"
 
-    /// Launch argument that shows the promo list before landing, so the
-    /// readings a case can only take *after* the list has rendered are
-    /// captureable too: `-demoVisitList 1`.
+    /// Launch argument that waits for the promo list to report its first row
+    /// before handing over, so the readings a case can only take *after* the
+    /// package has rendered something are captureable too: `-demoVisitList 1`.
+    ///
+    /// No longer a detour — the list is on the same screen as the panel — but
+    /// still a wait, because a screenshot taken the instant the setup finishes
+    /// catches every such reading at "nothing to judge yet".
     private static let visitListArgumentKey = "demoVisitList"
 
     /// The catalog currently handed to the package.
     var scenario: DemoScenario
 
-    /// The tab on screen. Owned here so a case can send the person to the
-    /// screen its check happens on once its setup is done.
+    /// The tab on screen. Owned here so `-demoTab` can pick it on launch.
     var selectedTab: DemoTab
 
-    /// The case whose detail is pushed in the Cases tab, if any.
+    /// The case whose panel is shown under the promo list, if any.
     var selectedCase: DemoVerificationCase?
 
     /// What the last case run did, and what the demo can see afterwards.
@@ -57,10 +63,22 @@ final class DemoViewModel {
     /// The case named by `-demoCase`, until it has been run.
     private var pendingCase: DemoVerificationCase?
 
-    /// The tab named by `-demoTab`, which outranks a case's own destination.
-    private let launchTab: DemoTab?
+    /// Whether a `-demoCase` setup is still running, and the promo list must
+    /// therefore not be built yet.
+    ///
+    /// `MoreAppsView` loads on its first appearance. While the case menu lived
+    /// on its own tab this took care of itself — the list tab was simply not
+    /// selected during the setup, so it was never built. Now that both are one
+    /// screen, a launch-argument run needs this to hold the list back until the
+    /// setup is finished; otherwise the list would load against a half-made
+    /// state and the screenshot would show it.
+    ///
+    /// One-way, and only ever true at launch: a case run by hand must *not*
+    /// take the list off screen, both because keeping it there is the point and
+    /// because the config-swap case deliberately leaves the view mounted.
+    private(set) var isPreparingLaunchCase: Bool
 
-    /// Whether `-demoVisitList` asked for a detour through the promo list.
+    /// Whether `-demoVisitList` asked for a wait on the promo list's first row.
     private let visitListOnLaunch: Bool
 
     /// Text of the remote URL field in the Debug tab.
@@ -116,16 +134,13 @@ final class DemoViewModel {
             .flatMap(DemoVerificationCase.init(rawValue:))
         let requestedTab = defaults.string(forKey: Self.tabArgumentKey).flatMap(DemoTab.init(rawValue:))
         pendingCase = requestedCase
-        launchTab = requestedTab
         visitListOnLaunch = defaults.bool(forKey: Self.visitListArgumentKey)
+        isPreparingLaunchCase = requestedCase != nil
 
-        // A pending case starts on the Cases tab so its setup finishes before
-        // the promo list is ever built: `MoreAppsView` loads on its first
-        // appearance, and appearing mid-setup would capture a half-made state.
-        selectedTab = requestedTab ?? (requestedCase == nil ? .settings : .cases)
+        selectedTab = requestedTab ?? .settings
     }
 
-    /// Runs the case named by `-demoCase`, if any, and lands on its screen.
+    /// Runs the case named by `-demoCase`, if any, and opens its panel.
     ///
     /// Called once from the app's root task. Does nothing without the argument,
     /// so an ordinary launch is unaffected.
@@ -135,17 +150,17 @@ final class DemoViewModel {
         selectedCase = pendingCase
         await run(pendingCase)
 
+        // The setup is done, so the list may load now.
+        isPreparingLaunchCase = false
+
         // Most readings only mean something once the package has actually
-        // rendered something, which needs the list on screen. This detour puts
-        // it there first, so a screenshot of the readings is not stuck on
-        // "nothing to judge yet" where tapping cannot be automated.
-        if visitListOnLaunch {
-            selectedTab = .settings
+        // rendered something. Waiting for the first impression before handing
+        // over keeps a screenshot of the readings off "nothing to judge yet" on
+        // a machine where tapping cannot be automated.
+        if visitListOnLaunch, selectedTab == .settings {
             await waitForFirstImpression()
             await refreshObservations()
         }
-
-        selectedTab = launchTab ?? pendingCase.destination
     }
 
     /// Waits, briefly, for the package to report that it rendered a row.
