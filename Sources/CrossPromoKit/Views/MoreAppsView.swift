@@ -3,13 +3,25 @@ import SwiftUI
 /// Main view for displaying the list of promotable FinePocket apps.
 /// Embed this in your settings screen or anywhere you want to show cross-promotions.
 public struct MoreAppsView: View {
-    @State private var service: PromoService
+    /// The service the view keeps for its whole lifetime.
+    ///
+    /// Built on the first `task` rather than in `init`: SwiftUI re-runs `init`
+    /// on every parent re-evaluation, and `@State` keeps only the first value,
+    /// so building it there threw away a `PromoService` — and the `CacheManager`
+    /// it creates — on every pass.
+    @State private var service: PromoService?
     @Binding private var forceRefresh: Bool
+
+    private let config: PromoConfig
+    /// Held weakly to match ``PromoService/eventDelegate``, so embedding this
+    /// view cannot keep its host alive.
+    private weak var eventDelegate: PromoEventDelegate?
 
     /// Creates a MoreAppsView.
     /// - Parameters:
     ///   - config: Custom configuration with JSON URL and app ID
-    ///   - eventDelegate: Delegate for receiving analytics events
+    ///   - eventDelegate: Delegate for receiving analytics events. Passing a
+    ///     different delegate later re-attaches it to the running service.
     ///   - forceRefresh: Binding that triggers a network refresh when set to
     ///     `true`; the view resets it to `false` once the refresh completes
     public init(
@@ -17,57 +29,98 @@ public struct MoreAppsView: View {
         eventDelegate: PromoEventDelegate? = nil,
         forceRefresh: Binding<Bool> = .constant(false)
     ) {
-        let promoService = PromoService(config: config)
-        promoService.eventDelegate = eventDelegate
-        _service = State(initialValue: promoService)
+        self.config = config
+        self.eventDelegate = eventDelegate
         _forceRefresh = forceRefresh
     }
 
     public var body: some View {
         Group {
-            if service.isLoading && service.apps.isEmpty {
-                loadingView
-            } else if service.apps.isEmpty {
-                emptyStateView
+            if let service {
+                content(for: service)
             } else {
-                appListView
+                // Only until the first `task` runs, which is also when the
+                // initial load starts — the same spinner it would show anyway.
+                loadingView
             }
         }
         .task {
+            let service = prepareService(existing: service)
+            self.service = service
             await service.loadApps()
+        }
+        .onChange(of: delegateIdentity) { _, _ in
+            // `task` does not re-run for a re-evaluated parent, so a delegate
+            // swapped in after the first pass has to be re-attached here.
+            service?.eventDelegate = eventDelegate
         }
         .onDisappear {
             // The overlay belongs to the window scene, not to this view, so it
             // would linger on screen after the promo UI is gone.
-            service.dismissOverlay()
+            service?.dismissOverlay()
         }
         .onChange(of: forceRefresh) { _, newValue in
             if newValue {
                 Task {
-                    await service.forceRefresh()
+                    // A nil service means the first load has not started yet, so
+                    // the pending `task` already satisfies the refresh request.
+                    await service?.forceRefresh()
                     forceRefresh = false
                 }
             }
         }
         .alert(L10n.overlayErrorTitle, isPresented: .init(
-            get: { service.showingOverlayError },
-            set: { _ in service.dismissOverlayError() }
+            get: { service?.showingOverlayError ?? false },
+            set: { _ in service?.dismissOverlayError() }
         )) {
             Button(L10n.overlayErrorOpenInAppStore) {
-                if let appStoreID = service.overlayErrorAppID {
+                if let service, let appStoreID = service.overlayErrorAppID {
                     service.openAppStoreDirectly(appStoreID: appStoreID)
                 }
-                service.dismissOverlayError()
+                service?.dismissOverlayError()
             }
             Button(L10n.cancel, role: .cancel) {
-                service.dismissOverlayError()
+                service?.dismissOverlayError()
             }
         } message: {
             Text(L10n.overlayErrorMessage)
         }
     }
 
+    // MARK: - Service Lifetime
+
+    /// Identity of the current delegate, so `onChange` can spot a swap without
+    /// requiring `PromoEventDelegate` to be `Equatable`.
+    private var delegateIdentity: ObjectIdentifier? {
+        eventDelegate.map { ObjectIdentifier($0) }
+    }
+
+    /// Returns the service the view should keep, attaching the current delegate.
+    ///
+    /// The service is created once and then reused: `existing` is returned
+    /// unchanged apart from its delegate, so repeated `task` runs (a view that
+    /// disappears and comes back) neither rebuild the service nor drop its
+    /// loaded apps.
+    /// - Parameter existing: The service already retained by this view, if any.
+    /// - Returns: The service to store and load from.
+    func prepareService(existing: PromoService?) -> PromoService {
+        let service = existing ?? PromoService(config: config)
+        service.eventDelegate = eventDelegate
+        return service
+    }
+
     // MARK: - Subviews
+
+    @ViewBuilder
+    private func content(for service: PromoService) -> some View {
+        if service.isLoading && service.apps.isEmpty {
+            loadingView
+        } else if service.apps.isEmpty {
+            emptyStateView(for: service)
+        } else {
+            appListView(for: service)
+        }
+    }
 
     private var loadingView: some View {
         HStack {
@@ -80,16 +133,16 @@ public struct MoreAppsView: View {
     }
 
     @ViewBuilder
-    private var emptyStateView: some View {
+    private func emptyStateView(for service: PromoService) -> some View {
         switch Self.emptyState(for: service.error) {
         case .noApps:
-            EmptyStateView.noApps(onRetry: reload)
+            EmptyStateView.noApps { reload(service) }
         case .offline:
-            EmptyStateView.offline(onRetry: reload)
+            EmptyStateView.offline { reload(service) }
         }
     }
 
-    private var appListView: some View {
+    private func appListView(for service: PromoService) -> some View {
         ForEach(service.apps) { app in
             PromoAppRow(app: app) {
                 service.handleAppTap(app)
@@ -100,7 +153,7 @@ public struct MoreAppsView: View {
         }
     }
 
-    private func reload() {
+    private func reload(_ service: PromoService) {
         Task {
             await service.loadApps()
         }
