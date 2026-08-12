@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build & Test (iOS Simulator)
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Select iOS Simulator
+        run: |
+          set -euo pipefail
+          UDID=$(python3 .github/scripts/select-simulator.py)
+          echo "SIMULATOR_ID=$UDID" >> "$GITHUB_ENV"
+
+      - name: Test CrossPromoKit
+        run: |
+          set -euo pipefail
+          xcodebuild test \
+            -scheme CrossPromoKit \
+            -destination "id=$SIMULATOR_ID" \
+            -quiet
+
+      - name: Build Example app
+        run: |
+          set -euo pipefail
+          xcodebuild build \
+            -project Example/CrossPromoDemo/CrossPromoDemo.xcodeproj \
+            -scheme CrossPromoDemo \
+            -destination "id=$SIMULATOR_ID" \
+            -quiet \
+            CODE_SIGNING_ALLOWED=NO
