@@ -131,6 +131,37 @@ public actor CacheManager {
         return Date().timeIntervalSince(cacheDate)
     }
 
+    /// Marks the cached data as expired **without deleting it**.
+    ///
+    /// The next ``loadIfValid()`` returns nil, so a `PromoService` load goes to
+    /// the network — but the data itself stays, so ``load()`` still answers if
+    /// that fetch fails. Use this when something outside the package (a push
+    /// notification, a version bump) says the catalog changed:
+    ///
+    /// | | Data | Next load | Fallback on failure |
+    /// |---|---|---|---|
+    /// | ``clearCache()`` | removed | network | none — empty state |
+    /// | ``expire()`` | kept | network | the stale data |
+    /// | `PromoService.forceRefresh()` | kept | network, once | the cached data |
+    ///
+    /// Implemented by backdating the timestamp to the expiration boundary rather
+    /// than removing it, so ``cacheAge()`` keeps reporting an age for data that
+    /// is still there. A cache already older than the boundary is left alone —
+    /// expiring must never make an entry look *younger* than it is.
+    ///
+    /// Does nothing when there is no cached data: with nothing to keep, the
+    /// cache already counts as expired, and writing a timestamp would invent an
+    /// age for data that does not exist.
+    public func expire() {
+        guard hasCachedData() else { return }
+
+        let boundary = Date().timeIntervalSince1970 - Self.expirationInterval
+        let stored = userDefaults.double(forKey: timestampKey)
+        guard stored <= 0 || stored > boundary else { return }
+
+        userDefaults.set(boundary, forKey: timestampKey)
+    }
+
     /// Clears the cached data for this scope.
     public func clearCache() {
         userDefaults.removeObject(forKey: catalogKey)

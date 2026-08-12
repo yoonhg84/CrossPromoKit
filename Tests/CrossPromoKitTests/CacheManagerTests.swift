@@ -148,6 +148,83 @@ struct CacheManagerTests {
         }
     }
 
+    // MARK: - Expiring Without Deleting
+
+    @Test("expire marks the cache stale but keeps the data")
+    func expireKeepsData() async throws {
+        try await withIsolatedCache { cache, _ in
+            let catalog = Fixture.catalog(ids: ["finebill"])
+            await cache.save(catalog)
+            #expect(await cache.isExpired() == false)
+
+            await cache.expire()
+
+            #expect(await cache.isExpired())
+            #expect(await cache.loadIfValid() == nil)
+            // The point of the API: the data survives as an offline fallback.
+            #expect(await cache.load() == catalog)
+            #expect(await cache.hasCachedData())
+        }
+    }
+
+    @Test("expire leaves an age reportable, unlike dropping the timestamp")
+    func expireKeepsCacheAgeReportable() async throws {
+        try await withIsolatedCache { cache, _ in
+            await cache.save(Fixture.catalog(ids: ["finebill"]))
+            let beforeExpire = Date().timeIntervalSince1970
+
+            await cache.expire()
+
+            // A nil age would make a host's "cached N hours ago" row read "no
+            // cache" while the data is still there, which is exactly what an
+            // implementation that removed the timestamp would produce.
+            let age = try #require(await cache.cacheAge())
+            #expect(age >= CacheManager.expirationInterval)
+            #expect(age <= CacheManager.expirationInterval + (Date().timeIntervalSince1970 - beforeExpire))
+        }
+    }
+
+    @Test("expire does not make an older cache look younger")
+    func expireDoesNotRejuvenateOlderCache() async throws {
+        try await withIsolatedCache { cache, defaults in
+            await cache.save(Fixture.catalog(ids: ["finebill"]))
+            let alreadyAged = CacheManager.expirationInterval * 3
+            backdate(cache, defaults, by: alreadyAged)
+
+            await cache.expire()
+
+            let age = try #require(await cache.cacheAge())
+            #expect(age >= alreadyAged)
+        }
+    }
+
+    @Test("expire on an empty cache invents no age")
+    func expireWithoutDataIsNoOp() async {
+        await withIsolatedCache { cache, _ in
+            await cache.expire()
+
+            #expect(await cache.isExpired())
+            #expect(await cache.hasCachedData() == false)
+            // Writing a timestamp here would report an age for data that does
+            // not exist.
+            #expect(await cache.cacheAge() == nil)
+        }
+    }
+
+    @Test("A cache saved after expiring is valid again")
+    func saveAfterExpireIsValid() async {
+        await withIsolatedCache { cache, _ in
+            await cache.save(Fixture.catalog(ids: ["finebill"]))
+            await cache.expire()
+
+            let refreshed = Fixture.catalog(ids: ["pocketstash"])
+            await cache.save(refreshed)
+
+            #expect(await cache.isExpired() == false)
+            #expect(await cache.loadIfValid() == refreshed)
+        }
+    }
+
     // MARK: - Clearing
 
     @Test("clearCache removes both catalog and timestamp")
@@ -232,6 +309,23 @@ struct CacheManagerScopeTests {
 
         #expect(await cacheA.load() == nil)
         #expect(await cacheB.load() == catalogForB)
+    }
+
+    @Test("Expiring one scope leaves the other valid")
+    func expiringOneScopeKeepsTheOther() async {
+        let storage = IsolatedDefaults()
+        defer { storage.remove() }
+        let cacheA = CacheManager(scope: catalogA, userDefaults: storage.make())
+        let cacheB = CacheManager(scope: catalogB, userDefaults: storage.make())
+        let catalogForB = Fixture.catalog(ids: ["pocketstash"])
+        await cacheA.save(Fixture.catalog(ids: ["finebill"]))
+        await cacheB.save(catalogForB)
+
+        await cacheA.expire()
+
+        #expect(await cacheA.isExpired())
+        #expect(await cacheB.isExpired() == false)
+        #expect(await cacheB.loadIfValid() == catalogForB)
     }
 
     @Test("The same URL round-trips through a freshly built cache")
