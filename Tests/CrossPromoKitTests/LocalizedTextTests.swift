@@ -1,6 +1,6 @@
+@testable import CrossPromoKit
 import Foundation
 import Testing
-@testable import CrossPromoKit
 
 @Suite("LocalizedText")
 struct LocalizedTextTests {

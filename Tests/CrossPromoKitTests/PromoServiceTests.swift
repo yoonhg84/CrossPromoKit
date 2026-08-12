@@ -1,6 +1,6 @@
+@testable import CrossPromoKit
 import Foundation
 import Testing
-@testable import CrossPromoKit
 
 @MainActor
 final class RecordingEventDelegate: PromoEventDelegate {

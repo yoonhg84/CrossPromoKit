@@ -1,0 +1,26 @@
+# Nested SwiftLint configuration for test code.
+#
+# SwiftLint merges this with the root `.swiftlint.yml` for files under `Tests/`.
+# Per-rule `excluded:` paths are NOT supported by these rules in SwiftLint 0.65
+# (it reports "Configuration for '<rule>' rule contains the invalid key(s)
+# 'excluded'" and lints the paths anyway), so a nested config is the only
+# mechanism that actually works here.
+#
+# Every relaxation below corresponds to a violation that `swiftlint lint --strict`
+# really reported once `Tests` was added to `included:`.
+
+disabled_rules:
+  # Fixtures and test doubles force-unwrap known-good literals and
+  # `URLRequest.url` on purpose: if the assumption breaks, the test should fail
+  # loudly at that line instead of silently taking a fallback path.
+  # Sites: TestFixtures.swift (literal icon URL),
+  #        StubURLProtocol.swift (request.url!, HTTPURLResponse(...)!),
+  #        NetworkClientTests.swift (request.url! inside a stub responder).
+  - force_unwrapping
+
+# A single type's test suite legitimately grows past the source-file budget;
+# splitting PromoServiceTests.swift purely to satisfy a line count would scatter
+# related cases across files without making anything clearer.
+file_length:
+  warning: 600
+  error: 800

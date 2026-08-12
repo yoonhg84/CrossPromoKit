@@ -33,9 +33,9 @@ opt_in_rules:
 
 included:
   - Sources
+  - Tests
 
 excluded:
-  - Tests
   - .build
   - DerivedData
 

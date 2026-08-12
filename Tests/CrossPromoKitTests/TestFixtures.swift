@@ -1,5 +1,5 @@
-import Foundation
 @testable import CrossPromoKit
+import Foundation
 
 // MARK: - Model Fixtures
 

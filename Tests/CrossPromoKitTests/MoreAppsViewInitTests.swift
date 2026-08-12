@@ -1,6 +1,6 @@
+@testable import CrossPromoKit
 import SwiftUI
 import Testing
-@testable import CrossPromoKit
 
 /// Guards source compatibility of the single defaulted `MoreAppsView` init:
 /// every call shape the previous overloads supported must still compile.
