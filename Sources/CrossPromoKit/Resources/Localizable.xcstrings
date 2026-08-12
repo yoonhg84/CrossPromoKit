@@ -50,49 +50,49 @@
       }
     },
     "emptyState.noApps.message" : {
-      "comment" : "Message shown when the app list could not be loaded",
+      "comment" : "Message shown when the catalog loaded but holds no apps to promote",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Check your network connection and try again."
+            "value" : "New apps will appear here when they're available."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ネットワーク接続を確認して、もう一度お試しください。"
+            "value" : "新しいアプリが追加されると、ここに表示されます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "네트워크 연결을 확인하고 다시 시도해 주세요."
+            "value" : "새로운 앱이 추가되면 여기에 표시됩니다."
           }
         }
       }
     },
     "emptyState.noApps.title" : {
-      "comment" : "Title shown when the app list could not be loaded",
+      "comment" : "Title shown when the catalog loaded but holds no apps to promote",
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Couldn't Load Apps"
+            "value" : "No Apps Yet"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "アプリを読み込めませんでした"
+            "value" : "紹介できるアプリがありません"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱을 불러올 수 없습니다"
+            "value" : "소개할 앱이 없습니다"
           }
         }
       }
