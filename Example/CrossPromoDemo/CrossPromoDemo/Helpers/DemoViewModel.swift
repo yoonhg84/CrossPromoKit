@@ -1,3 +1,4 @@
+import CrossPromoKit
 import Foundation
 import SwiftUI
 
@@ -8,23 +9,24 @@ final class DemoViewModel {
     /// Current demo state for UI testing
     var demoState: DemoState = .loaded
 
-    /// Cache status description
-    var cacheStatus: String {
-        // Check UserDefaults for cache timestamp
-        let defaults = UserDefaults.standard
-        if let timestamp = defaults.object(forKey: "CrossPromoKit.CacheTimestamp") as? Date {
-            let formatter = RelativeDateTimeFormatter()
-            formatter.unitsStyle = .full
-            let relativeTime = formatter.localizedString(for: timestamp, relativeTo: Date())
-            let calendar = Calendar.current
-            let hoursSince = calendar.dateComponents([.hour], from: timestamp, to: Date()).hour ?? 0
-            if hoursSince < 24 {
-                return "Valid (cached \(relativeTime))"
-            } else {
-                return "Expired (cached \(relativeTime))"
-            }
+    /// Human-readable cache status, refreshed by ``refreshCacheStatus()``.
+    ///
+    /// Stored rather than computed because ``CacheManager`` is an actor and a
+    /// computed property cannot await.
+    private(set) var cacheStatus: String = "Empty (no cache)"
+
+    /// Cache scoped to the demo's catalog URL, or nil when the bundled JSON is missing.
+    ///
+    /// Cache keys are derived from the catalog URL, so the scope has to match the
+    /// one ``SettingsView`` builds its ``PromoConfig`` with.
+    private let cacheManager: CacheManager?
+
+    init() {
+        if let catalogURL = Bundle.main.url(forResource: "demo-apps", withExtension: "json") {
+            cacheManager = CacheManager(scope: catalogURL)
+        } else {
+            cacheManager = nil
         }
-        return "Empty (no cache)"
     }
 
     /// Current language code
@@ -32,11 +34,35 @@ final class DemoViewModel {
         Locale.current.language.languageCode?.identifier ?? "Unknown"
     }
 
-    /// Force refresh by clearing cache
-    func forceRefresh() {
-        UserDefaults.standard.removeObject(forKey: "CrossPromoKit.CacheTimestamp")
-        UserDefaults.standard.removeObject(forKey: "CrossPromoKit.CachedCatalog")
+    /// Reloads ``cacheStatus`` from the cache for the demo's catalog URL.
+    func refreshCacheStatus() async {
+        guard let cacheManager else {
+            cacheStatus = "Unavailable (demo-apps.json not found)"
+            return
+        }
+
+        guard let age = await cacheManager.cacheAge() else {
+            cacheStatus = "Empty (no cache)"
+            return
+        }
+
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        let cachedAt = Date().addingTimeInterval(-age)
+        let relativeTime = formatter.localizedString(for: cachedAt, relativeTo: Date())
+
+        if await cacheManager.isExpired() {
+            cacheStatus = "Expired (cached \(relativeTime))"
+        } else {
+            cacheStatus = "Valid (cached \(relativeTime))"
+        }
+    }
+
+    /// Force refresh by clearing the cache for the demo's catalog URL.
+    func forceRefresh() async {
+        await cacheManager?.clearCache()
         // Reset to loaded state to trigger reload
         demoState = .loaded
+        await refreshCacheStatus()
     }
 }
