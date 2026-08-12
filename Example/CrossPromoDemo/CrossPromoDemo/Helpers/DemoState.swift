@@ -9,7 +9,11 @@ enum DemoState: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    var displayName: String {
+    /// Localized label shown in the Debug tab state picker.
+    ///
+    /// Returns `LocalizedStringResource` so `Text(_:)` resolves the value through the
+    /// String Catalog. A plain `String` would bypass localization entirely.
+    var displayName: LocalizedStringResource {
         switch self {
         case .loaded: return "Loaded"
         case .loading: return "Loading"
@@ -18,7 +22,8 @@ enum DemoState: String, CaseIterable, Identifiable {
         }
     }
 
-    var description: String {
+    /// Localized explanation of what the state renders, shown under the picker.
+    var description: LocalizedStringResource {
         switch self {
         case .loaded: return "Shows the loaded state with app list"
         case .loading: return "Shows loading indicator"
