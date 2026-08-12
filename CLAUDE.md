@@ -42,11 +42,16 @@ xcodebuild -scheme CrossPromoDemo -destination 'platform=iOS Simulator,name=iPho
 ```
 
 ```bash
-# Lint (config: .swiftlint.yml, covers Sources only; brew install swiftlint)
+# Lint (config: .swiftlint.yml, covers Sources only)
+# Use the version pinned in .swiftlint-version — CI downloads that exact release.
+swiftlint version   # must match `cat .swiftlint-version`
 swiftlint lint --strict
 ```
 
-CI runs the same `--strict` invocation, so any warning fails the build.
+CI runs the same `--strict` invocation with the pinned version, so any warning
+fails the build. To upgrade: bump `.swiftlint-version` (and your local install to
+the same version), run `swiftlint lint --strict` to surface violations added by
+the new release's rules, fix them in the same PR.
 
 ## Code Style
 
