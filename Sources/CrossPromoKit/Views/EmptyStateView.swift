@@ -69,9 +69,9 @@ public extension EmptyStateView {
     static func noApps(onRetry: @escaping () -> Void) -> EmptyStateView {
         EmptyStateView(
             icon: "app.badge.fill",
-            title: "앱을 불러올 수 없습니다",
-            message: "네트워크 연결을 확인하고 다시 시도해 주세요.",
-            retryTitle: "다시 시도",
+            title: L10n.noAppsTitle,
+            message: L10n.noAppsMessage,
+            retryTitle: L10n.retry,
             onRetry: onRetry
         )
     }
@@ -81,9 +81,9 @@ public extension EmptyStateView {
     static func offline(onRetry: @escaping () -> Void) -> EmptyStateView {
         EmptyStateView(
             icon: "wifi.slash",
-            title: "오프라인 상태입니다",
-            message: "인터넷에 연결되면 앱 목록을 불러올 수 있습니다.",
-            retryTitle: "다시 시도",
+            title: L10n.offlineTitle,
+            message: L10n.offlineMessage,
+            retryTitle: L10n.retry,
             onRetry: onRetry
         )
     }

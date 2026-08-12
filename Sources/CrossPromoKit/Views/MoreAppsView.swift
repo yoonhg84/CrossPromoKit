@@ -66,21 +66,21 @@ public struct MoreAppsView: View {
                 }
             }
         }
-        .alert("App Store를 열 수 없습니다", isPresented: .init(
+        .alert(L10n.overlayErrorTitle, isPresented: .init(
             get: { service.showingOverlayError },
             set: { _ in service.dismissOverlayError() }
         )) {
-            Button("App Store에서 열기") {
+            Button(L10n.overlayErrorOpenInAppStore) {
                 if let appStoreID = service.overlayErrorAppID {
                     service.openAppStoreDirectly(appStoreID: appStoreID)
                 }
                 service.dismissOverlayError()
             }
-            Button("취소", role: .cancel) {
+            Button(L10n.cancel, role: .cancel) {
                 service.dismissOverlayError()
             }
         } message: {
-            Text("인앱 App Store를 표시할 수 없습니다. App Store 앱에서 직접 열까요?")
+            Text(L10n.overlayErrorMessage)
         }
     }
 

@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "CrossPromoKit",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v17)
     ],
@@ -16,7 +17,10 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "CrossPromoKit"
+            name: "CrossPromoKit",
+            resources: [
+                .process("Resources/Localizable.xcstrings")
+            ]
         ),
         .testTarget(
             name: "CrossPromoKitTests",

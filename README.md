@@ -16,7 +16,7 @@ CrossPromoKit enables seamless cross-promotion between your iOS apps using a rem
 - **Three-Tier Fallback**: Network → Cache → Empty State for reliability
 - **Analytics Ready**: Delegate-based event tracking for impressions and taps
 - **Promo Rules**: Control which apps promote which with customizable rules
-- **Localization**: Built-in support for localized taglines
+- **Localization**: Localized UI strings (English, Korean, Japanese) plus localized catalog taglines
 - **Swift 6.0**: Full strict concurrency compliance with Sendable types
 
 ## Demo
@@ -250,6 +250,17 @@ enum PromoEvent {
 - `tagline` falls back to English if user's locale isn't available
 - Apps are displayed in JSON array order
 - The current app is always excluded automatically
+
+## Localization
+
+Two things are localized independently:
+
+- **Catalog content** (`tagline`, `category`) — supplied by your JSON, keyed by language code, falling back to English.
+- **Built-in UI strings** (empty states, retry/cancel buttons, the App Store overlay error alert) — shipped inside the package as a String Catalog (`Sources/CrossPromoKit/Resources/Localizable.xcstrings`).
+
+Bundled UI languages: English (source), Korean, Japanese. Other locales fall back to English.
+
+To add a language, open `Localizable.xcstrings` in Xcode, add the locale, and translate the entries — no code changes are needed.
 
 ## License
 
