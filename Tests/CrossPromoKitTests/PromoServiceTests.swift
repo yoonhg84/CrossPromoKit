@@ -11,6 +11,31 @@ final class RecordingEventDelegate: PromoEventDelegate {
     }
 }
 
+/// Records overlay presentation calls in place of the real `SKOverlay`, which
+/// cannot be presented without a foreground window scene.
+@MainActor
+final class StubOverlayPresenter: AppStoreOverlayPresenting {
+    enum Call: Equatable {
+        case present(appStoreID: String)
+        case dismiss
+    }
+
+    /// Controls whether ``present(appStoreID:)`` reports success, standing in
+    /// for the presence or absence of a foreground window scene.
+    var canPresent = true
+    private(set) var calls: [Call] = []
+
+    @discardableResult
+    func present(appStoreID: String) -> Bool {
+        calls.append(.present(appStoreID: appStoreID))
+        return canPresent
+    }
+
+    func dismiss() {
+        calls.append(.dismiss)
+    }
+}
+
 @Suite("PromoService.filterApps")
 @MainActor
 struct PromoServiceFilterTests {
@@ -250,6 +275,106 @@ struct PromoServiceLoadTests {
 
         #expect(await probeCache(storage).load() == cached)
         #expect(service.apps.map(\.id) == ["finebill"])
+    }
+}
+
+@Suite("PromoService overlay presentation")
+@MainActor
+struct PromoServiceOverlayTests {
+    private func makeService(
+        presenter: StubOverlayPresenter
+    ) -> (PromoService, RecordingEventDelegate) {
+        let service = PromoService(
+            config: PromoConfig(
+                jsonURL: URL(string: "https://example.com/apps.json")!,
+                currentAppID: "host"
+            ),
+            overlayPresenter: presenter
+        )
+        let delegate = RecordingEventDelegate()
+        service.eventDelegate = delegate
+        return (service, delegate)
+    }
+
+    @Test("A tap dismisses any previous overlay before presenting the new one")
+    func tapDismissesPreviousOverlayFirst() {
+        let presenter = StubOverlayPresenter()
+        let (service, _) = makeService(presenter: presenter)
+
+        service.handleAppTap(Fixture.app(id: "finebill", appStoreID: "111"))
+        service.handleAppTap(Fixture.app(id: "pocketstash", appStoreID: "222"))
+
+        #expect(presenter.calls == [
+            .dismiss,
+            .present(appStoreID: "111"),
+            .dismiss,
+            .present(appStoreID: "222")
+        ])
+    }
+
+    @Test("A tap still emits its tap event")
+    func tapEmitsEvent() {
+        let presenter = StubOverlayPresenter()
+        let (service, delegate) = makeService(presenter: presenter)
+
+        service.handleAppTap(Fixture.app(id: "finebill"))
+
+        #expect(delegate.events == [.tap(appID: "finebill")])
+        #expect(service.showingOverlayError == false)
+    }
+
+    @Test("dismissOverlay forwards to the presenter")
+    func dismissOverlayForwardsToPresenter() {
+        let presenter = StubOverlayPresenter()
+        let (service, _) = makeService(presenter: presenter)
+
+        service.dismissOverlay()
+
+        #expect(presenter.calls == [.dismiss])
+    }
+
+    @Test("A failed presentation raises the App Store fallback alert")
+    func failedPresentationRaisesFallbackAlert() {
+        let presenter = StubOverlayPresenter()
+        presenter.canPresent = false
+        let (service, _) = makeService(presenter: presenter)
+
+        service.handleAppTap(Fixture.app(id: "finebill", appStoreID: "999"))
+
+        #expect(service.showingOverlayError == true)
+        #expect(service.overlayErrorAppID == "999")
+    }
+
+    @Test("Dismissing the overlay leaves the error alert state alone")
+    func dismissOverlayDoesNotTouchErrorState() {
+        let presenter = StubOverlayPresenter()
+        presenter.canPresent = false
+        let (service, _) = makeService(presenter: presenter)
+        service.handleAppTap(Fixture.app(id: "finebill", appStoreID: "999"))
+
+        service.dismissOverlay()
+
+        #expect(service.showingOverlayError == true)
+        #expect(service.overlayErrorAppID == "999")
+    }
+}
+
+@Suite("SKOverlayPresenter")
+@MainActor
+struct SKOverlayPresenterTests {
+    @Test("Presenting without a foreground window scene reports failure")
+    func presentWithoutSceneFails() {
+        #expect(SKOverlayPresenter().present(appStoreID: "123") == false)
+    }
+
+    @Test("Dismissing without a tracked overlay is a safe no-op")
+    func dismissWithoutPresentedOverlayIsSafe() {
+        let presenter = SKOverlayPresenter()
+
+        presenter.dismiss()
+        presenter.dismiss()
+
+        #expect(presenter.present(appStoreID: "123") == false)
     }
 }
 
