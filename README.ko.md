@@ -50,11 +50,18 @@ SPM을 통해 CrossPromoKit을 프로젝트에 추가하세요:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/user/CrossPromoKit.git", from: "1.0.0")
+    .package(url: "https://github.com/yoonhg84/CrossPromoKit.git", branch: "main")
 ]
 ```
 
-또는 Xcode에서: File → Add Package Dependencies → 저장소 URL 입력.
+아직 태그된 릴리스가 없어 `from: "1.0.0"` 같은 버전 요구사항은 해석되지 않습니다.
+지금은 브랜치(또는 `revision:`으로 특정 커밋)를 지정하세요. 버전 태그가 생기면
+`.package(url: "https://github.com/yoonhg84/CrossPromoKit.git", from: "x.y.z")`로
+바꾸면 됩니다.
+
+또는 Xcode에서: File → Add Package Dependencies →
+`https://github.com/yoonhg84/CrossPromoKit.git` 입력 후 **Branch** 규칙으로 `main`
+선택.
 
 ## 빠른 시작
 
@@ -142,6 +149,11 @@ let handler = AnalyticsHandler()
 MoreAppsView(config: config, eventDelegate: handler)
 ```
 
+> **핸들러를 직접 강하게 유지하세요.** `PromoService.eventDelegate`는 `weak`
+> 참조이므로, 뷰 모델의 프로퍼티처럼 수명이 긴 곳에서 델리게이트를 붙잡고 있어야
+> 합니다. 지역 변수로만 만든 핸들러는 스코프가 끝나는 순간 해제되고, 아무런 오류
+> 없이 이벤트가 조용히 끊깁니다.
+
 ### 프로모션 규칙
 
 어떤 앱이 어떤 앱을 프로모션할 수 있는지 제어하세요:
@@ -208,13 +220,41 @@ class PromoService {
     var apps: [PromoApp]      // 현재 필터링된 앱 목록
     var isLoading: Bool       // 로딩 상태
     var error: Error?         // 오류 상태
+    weak var eventDelegate: PromoEventDelegate? // 분석 델리게이트 (weak — 호출자가 유지)
 
     func loadApps() async     // 폴백으로 로드
-    func forceRefresh() async // 캐시 무시
-    func handleAppTap(_ app: PromoApp)       // 오버레이 표시
+    func forceRefresh() async // 네트워크에서 다시 로드
+    func handleAppTap(_ app: PromoApp)        // 오버레이 표시
     func handleAppImpression(_ app: PromoApp) // 노출 추적
+    func dismissOverlay()     // 이 서비스가 띄운 App Store 오버레이 정리
 }
 ```
+
+`forceRefresh()`는 `loadApps()`와 동일한 네트워크 → 캐시 → 빈 상태 경로를 그대로
+실행합니다. 캐시를 우회하는 경로는 없으며, 캐시는 네트워크 실패 시의 폴백일
+뿐이고 성공한 응답이 캐시를 덮어씁니다.
+
+`dismissOverlay()`는 이 서비스가 표시 중인 SKOverlay를 정리합니다. 오버레이는
+뷰가 아니라 윈도우 씬에 붙어 있어 프로모션 UI보다 오래 남을 수 있으므로,
+`MoreAppsView`는 `onDisappear`에서 이 메서드를 호출합니다. 표시 중인 오버레이가
+없으면 아무 일도 하지 않습니다.
+
+### CacheManager
+
+카탈로그 캐시입니다 (UserDefaults 기반, 24시간 만료).
+
+```swift
+actor CacheManager {
+    init(scope: URL, userDefaults: UserDefaults = .standard)
+    init(scopeIdentifier: String, userDefaults: UserDefaults = .standard)
+}
+```
+
+캐시 항목은 데이터를 가져온 **카탈로그 URL별로 분리**됩니다. 따라서 한 앱 안에서
+서로 다른 `PromoConfig`를 써도 캐시가 서로 덮어쓰지 않습니다. `PromoService`는
+기본적으로 `config.jsonURL`을 스코프로 하는 `CacheManager(scope:)`를 직접
+만들며, 다른 네임스페이스나 별도의 `UserDefaults` 스위트가 필요할 때만 직접
+전달하면 됩니다.
 
 ### PromoEvent
 
@@ -238,7 +278,7 @@ enum PromoEvent {
       "id": "string",           // 고유 식별자
       "name": "string",         // 표시 이름
       "appStoreID": "string",   // App Store 숫자 ID
-      "iconURL": "string",      // 아이콘 HTTPS URL
+      "iconURL": "string",      // 이미지 URL 또는 sf-symbol://<심볼 이름>
       "category": "string",     // 카테고리 라벨
       "tagline": {              // 지역화된 설명
         "en": "string",
@@ -254,7 +294,14 @@ enum PromoEvent {
 
 ### 참고사항
 
-- `iconURL`은 반드시 HTTPS여야 합니다
+- `iconURL`에는 원격 이미지 URL(HTTPS 권장, 일반 HTTP는 App Transport Security의
+  제약을 받습니다) 또는 `sf-symbol://<심볼 이름>` URL을 넣을 수 있습니다. 예를
+  들어 `"sf-symbol://cloud.sun.fill"`은 이미지를 내려받지 않고 해당 SF Symbol을
+  로컬에서 그립니다. `sf-symbol://`이 아닌 값은 SwiftUI `AsyncImage`로 전달되며,
+  이미지를 불러오지 못하면 플레이스홀더 아이콘으로 대체됩니다.
+  `Example/CrossPromoDemo` 카탈로그가 SF Symbol 방식을 사용합니다.
+- 카탈로그 URL(`PromoConfig.jsonURL`) 자체도 `https://`, `http://`, `file://`을
+  지원하므로, 앱에 번들된 JSON 파일을 데모나 테스트에 그대로 쓸 수 있습니다.
 - `tagline`은 사용자 로케일이 없으면 영어로 폴백됩니다
 - 앱은 JSON 배열 순서대로 표시됩니다
 - 현재 앱은 항상 자동으로 제외됩니다
