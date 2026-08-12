@@ -1,73 +1,58 @@
-# CrossPromoKit Development Guidelines
+# CrossPromoKit
 
-## Overview
+Swift package: a drop-in SwiftUI `MoreAppsView` that cross-promotes your other iOS
+apps from a remote JSON catalog, opening the App Store via SKOverlay.
 
-Swift package (SPM) providing a drop-in SwiftUI `MoreAppsView` for cross-promoting
-your other iOS apps from a remote JSON catalog, with SKOverlay-based App Store
-presentation.
-
-- Swift 6.0 tools, strict concurrency (Swift 6 language mode), iOS 17+ only
-- Frameworks: SwiftUI, StoreKit (SKOverlay), Foundation (URLSession, UserDefaults)
-- No third-party dependencies
-
-## Project Structure
-
-```text
-Sources/CrossPromoKit/
-  Models/        PromoApp, AppCatalog, PromoConfig, PromoEvent, LocalizedText
-  Services/      PromoService, NetworkClient, CacheManager
-  Views/         MoreAppsView, PromoAppRow, EmptyStateView, Components/AsyncAppIcon
-  Protocols/     PromoEventDelegate
-  Extensions/    L10n, Locale+Supported
-  Design/        WarmEmbraceTokens (colors, spacing, typography)
-  Resources/     Localizable.xcstrings (en, ko, ja)
-Tests/CrossPromoKitTests/      swift-testing suites + StubURLProtocol/TestFixtures
-Example/CrossPromoDemo/        demo app (CrossPromoDemo.xcodeproj, consumes the local package)
-docs/images/                   README assets
-specs/                         historical requirement docs (FR-### references in code point here)
-```
+Swift 6 strict concurrency, iOS 17+, no third-party dependencies.
 
 ## Commands
 
-`swift build` / `swift test` do **not** work: the package is iOS-only and the
-SwiftUI/StoreKit code fails to compile for the macOS host. Use xcodebuild against
-a simulator instead.
+`swift build` / `swift test` **fail** — the package is iOS-only and its SwiftUI /
+StoreKit code cannot compile for the macOS host. Always use a simulator:
 
 ```bash
-# Run the package tests
 xcodebuild test -scheme CrossPromoKit -destination 'platform=iOS Simulator,name=iPhone 17'
-
-# Run the demo app (from Example/CrossPromoDemo)
-xcodebuild -scheme CrossPromoDemo -destination 'platform=iOS Simulator,name=iPhone 17' build
+swiftlint lint --strict   # version must match .swiftlint-version; CI fails on any warning
 ```
+
+Touching `Example/`? Build the demo too — it is what proves isolation and SwiftUI
+overload resolution:
 
 ```bash
-# Lint (config: .swiftlint.yml, covers Sources only)
-# Use the version pinned in .swiftlint-version — CI downloads that exact release.
-swiftlint version   # must match `cat .swiftlint-version`
-swiftlint lint --strict
+xcodebuild build -project Example/CrossPromoDemo/CrossPromoDemo.xcodeproj \
+  -scheme CrossPromoDemo -destination 'platform=iOS Simulator,name=iPhone 17' \
+  CODE_SIGNING_ALLOWED=NO
 ```
 
-CI runs the same `--strict` invocation with the pinned version, so any warning
-fails the build. To upgrade: bump `.swiftlint-version` (and your local install to
-the same version), run `swiftlint lint --strict` to surface violations added by
-the new release's rules, fix them in the same PR.
+## Principles
 
-## Code Style
+**Concurrency.** `PromoService` and `PromoEventDelegate` are `@MainActor`;
+`NetworkClient` and `CacheManager` are actors. Never silence a warning with
+`@unchecked Sendable` — fix the isolation.
 
-- Public API must be explicitly `public`; keep types `Sendable`.
-- Concurrency: `PromoService` and `PromoEventDelegate` are `@MainActor`;
-  `NetworkClient` and `CacheManager` are actors. Do not reach for
-  `@unchecked Sendable` to silence warnings.
-- User-facing strings go through `L10n` / `Localizable.xcstrings`, never literals.
-- Colors, spacing, and fonts come from `WarmEmbraceTokens`, never hardcoded.
-- `.swiftlint.yml` opt-ins ban `force_unwrapping` and implicitly unwrapped
-  optionals; `line_length` and `trailing_whitespace` are disabled.
-- Tests use swift-testing (`import Testing`, `@Test`/`@Suite`), not XCTest.
-- UI is SwiftUI-only; observable state uses the `@Observable` macro, never
-  `ObservableObject`/`@Published`.
-- Offline-first: a failed fetch falls back to cache and degrades silently — never
-  block rendering or surface an error dialog for a network failure.
-- Keep the package dependency-free; use system frameworks. Adding a runtime
-  dependency needs an explicit justification in the PR.
-- Public types and methods carry doc comments; public API changes update the README.
+**Offline-first.** A failed fetch falls back to cache, even stale cache. Never
+block rendering or raise a dialog because the network failed.
+
+**No hardcoded surfaces.** User-facing strings go through `L10n` /
+`Localizable.xcstrings` (en/ko/ja). Colors, spacing, and fonts come from
+`WarmEmbraceTokens`.
+
+**No new dependencies.** System frameworks only; adding one needs justification
+in the PR.
+
+**SwiftUI + `@Observable`.** Never `ObservableObject` / `@Published`.
+
+**Tests are Swift Testing** (`@Test` / `@Suite`), never XCTest. Never assert on
+wall-clock durations. If a test passes against deliberately broken code, it is
+not a test.
+
+**Public API is documented API.** Public types and methods carry doc comments,
+and a public change updates both READMEs together.
+
+## Workflow
+
+Issue → branch → PR → green CI → merge. `/ship` runs that pipeline end to end;
+`.claude/agents/issue-worker.md` is the per-issue contract.
+
+`specs/` is a historical record, not a spec to follow — parts of it describe APIs
+that no longer exist. Code cites it only via `FR-###`.
