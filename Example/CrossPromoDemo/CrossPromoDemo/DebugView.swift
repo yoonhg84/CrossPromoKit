@@ -37,7 +37,7 @@ struct DebugView: View {
                     }
 
                     Button("Force Refresh") {
-                        viewModel.forceRefresh()
+                        Task { await viewModel.forceRefresh() }
                     }
                 } header: {
                     Text("Cache")
@@ -82,6 +82,9 @@ struct DebugView: View {
                 }
             }
             .navigationTitle("Debug")
+            .task {
+                await viewModel.refreshCacheStatus()
+            }
         }
     }
 }
