@@ -22,6 +22,11 @@ struct SettingsView: View {
                             eventDelegate: viewModel.eventHandler,
                             forceRefresh: $viewModel.forceRefreshRequested
                         )
+                        // A verification case that needs a load from scratch
+                        // bumps this, which is the same thing a host app does
+                        // by navigating away from its settings screen and back:
+                        // the view — and the service it retains — is built anew.
+                        .id(viewModel.listGeneration)
                     } else {
                         Text("No catalog URL yet. Enter one in the Debug tab.")
                             .foregroundStyle(.secondary)
