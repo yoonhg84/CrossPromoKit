@@ -121,6 +121,27 @@ public final class PromoService: Sendable {
         UIApplication.shared.open(url)
     }
 
+    // MARK: - Internal Methods
+
+    /// Filters the catalog down to the apps this host app should promote.
+    ///
+    /// Removes the host app itself, applies `promoRules` when the catalog
+    /// defines them for this host, and preserves the catalog's JSON order (FR-016).
+    /// - Parameter catalog: The catalog to filter
+    /// - Returns: The apps to display, in catalog order
+    func filterApps(from catalog: AppCatalog) -> [PromoApp] {
+        // Exclude current app
+        var filtered = catalog.apps.filter { $0.id != config.currentAppID }
+
+        // Apply promo rules if they exist for this app
+        if let rules = catalog.promoRules?[config.currentAppID] {
+            filtered = filtered.filter { rules.contains($0.id) }
+        }
+
+        // Preserve JSON order (FR-016)
+        return filtered
+    }
+
     // MARK: - Private Methods
 
     private func presentAppStoreOverlay(for app: PromoApp) {
@@ -141,19 +162,6 @@ public final class PromoService: Sendable {
     private func handleOverlayError(for app: PromoApp) {
         overlayErrorAppID = app.appStoreID
         showingOverlayError = true
-    }
-
-    private func filterApps(from catalog: AppCatalog) -> [PromoApp] {
-        // Exclude current app
-        var filtered = catalog.apps.filter { $0.id != config.currentAppID }
-
-        // Apply promo rules if they exist for this app
-        if let rules = catalog.promoRules?[config.currentAppID] {
-            filtered = filtered.filter { rules.contains($0.id) }
-        }
-
-        // Preserve JSON order (FR-016)
-        return filtered
     }
 
     private func emit(_ event: PromoEvent) {

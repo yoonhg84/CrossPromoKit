@@ -18,13 +18,19 @@ public struct LocalizedText: Codable, Sendable, Equatable {
 
     /// Returns the appropriate text based on device locale, falling back to English.
     public var localized: String {
-        let languageCode = Locale.current.language.languageCode?.identifier ?? "en"
-        switch languageCode {
-        case "ko":
+        localized(for: Locale.current.supportedLanguage)
+    }
+
+    /// Returns the text for a specific language, falling back to English when missing.
+    /// - Parameter language: The language to resolve
+    /// - Returns: The localized text, or the English text if unavailable
+    public func localized(for language: Locale.SupportedLanguage) -> String {
+        switch language {
+        case .korean:
             return ko ?? en
-        case "ja":
+        case .japanese:
             return ja ?? en
-        default:
+        case .english:
             return en
         }
     }
