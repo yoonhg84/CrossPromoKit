@@ -1,6 +1,70 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "A cache younger than 24 hours is used as-is. The setup leaves a newer catalog on disk than the one in the cache, so a list showing the cached number is proof no fetch happened." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "24時間以内のキャッシュはそのまま使われます。セットアップはキャッシュより新しいカタログをディスクに残すので、リストにキャッシュ側の番号が出ていればフェッチしなかった証拠です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "24시간이 지나지 않은 캐시는 그대로 쓰입니다. 설정이 캐시보다 새로운 카탈로그를 디스크에 남겨 두므로, 목록에 캐시 쪽 번호가 보이면 네트워크를 타지 않았다는 증거입니다."
+          }
+        }
+      }
+    },
+    "A forced refresh ignores a valid cache. Try each entry point in turn: the toolbar ↻, pull-to-refresh on the Settings list, and Force Refresh in the Debug tab." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "強制リフレッシュは有効なキャッシュを無視します。入口を1つずつ試してください — ツールバーの ↻、設定リストの引っ張って更新、Debug タブの強制リフレッシュ。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "강제 새로고침은 유효한 캐시를 무시합니다. 진입점을 하나씩 시도해 보세요 — 툴바 ↻, 설정 목록의 당겨서 새로고침, Debug 탭의 강제 새로고침."
+          }
+        }
+      }
+    },
+    "A stale cache survives a failed fetch" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フェッチが失敗しても古いキャッシュが残る"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실패한 요청 뒤에도 오래된 캐시가 살아남습니다"
+          }
+        }
+      }
+    },
+    "A valid cache answers without a fetch" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有効なキャッシュはフェッチせずに応答する"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "유효한 캐시는 네트워크 없이 응답합니다"
+          }
+        }
+      }
+    },
     "A valid cache is used without any fetch. Force Refresh always fetches, keeping the old cache as a fallback if the fetch fails; Clear Cache removes that fallback. Expire Cache keeps the data but makes the next ordinary load fetch — delete the catalog file first and the stale list is what you get back." : {
       "localizations" : {
         "ja" : {
@@ -13,6 +77,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "캐시가 유효하면 가져오기를 하지 않습니다. 강제 새로고침은 항상 가져오며 실패에 대비해 기존 캐시를 남겨 둡니다. 캐시 지우기는 그 폴백을 없앱니다. 캐시 만료는 데이터를 남긴 채 다음 일반 로드가 네트워크를 타게 만듭니다 — 카탈로그 파일을 먼저 지우면 오래된 목록이 그대로 돌아옵니다."
+          }
+        }
+      }
+    },
+    "After each entry point the Catalog v… row moves to the file number." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入口を使うたびに Catalog v… 行がファイルの番号に変わります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진입점을 쓸 때마다 Catalog v… 행이 파일 번호로 바뀝니다."
+          }
+        }
+      }
+    },
+    "App Store overlay: shown, replaced, dismissed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store オーバーレイ：表示・置き換え・破棄"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store 오버레이: 표시·교체·정리"
           }
         }
       }
@@ -33,6 +129,22 @@
         }
       }
     },
+    "Bump the catalog file to the next version" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カタログファイルを次のバージョンへ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 파일을 다음 버전으로 올리기"
+          }
+        }
+      }
+    },
     "Cache" : {
       "localizations" : {
         "ja" : {
@@ -45,6 +157,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "캐시"
+          }
+        }
+      }
+    },
+    "Cache the catalog file, as a successful fetch would" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フェッチが成功したときと同じくカタログファイルをキャッシュへ保存"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "요청이 성공했을 때처럼 카탈로그 파일을 캐시에 저장"
+          }
+        }
+      }
+    },
+    "Cached version vs. file version" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャッシュのバージョン / ファイルのバージョン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캐시 버전 / 파일 버전"
+          }
+        }
+      }
+    },
+    "Cases" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ケース"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "케이스"
           }
         }
       }
@@ -97,6 +257,22 @@
         }
       }
     },
+    "Check by eye" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目で確認"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "눈으로 확인"
+          }
+        }
+      }
+    },
     "Clear Cache" : {
       "localizations" : {
         "ja" : {
@@ -125,6 +301,70 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이벤트 지우기"
+          }
+        }
+      }
+    },
+    "Clear the cache for this catalog URL" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このカタログ URL のキャッシュを消去"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 카탈로그 URL의 캐시 지우기"
+          }
+        }
+      }
+    },
+    "Clear the event log" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "イベントログを空にする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이벤트 로그 비우기"
+          }
+        }
+      }
+    },
+    "Config, events, overlay" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "config・イベント・オーバーレイ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "config·이벤트·오버레이"
+          }
+        }
+      }
+    },
+    "Control: cleared cache leaves nothing to fall back on" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "対照群：キャッシュを消すとフォールバック先がない"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대조군: 캐시를 지우면 폴백할 것이 없습니다"
           }
         }
       }
@@ -193,6 +433,22 @@
         }
       }
     },
+    "Delete the catalog file" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カタログファイルを削除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 파일 삭제"
+          }
+        }
+      }
+    },
     "Demo Configuration" : {
       "localizations" : {
         "ja" : {
@@ -205,6 +461,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "데모 설정"
+          }
+        }
+      }
+    },
+    "Each catalog URL caches separately" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カタログ URL ごとにキャッシュが分かれる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 URL마다 캐시가 분리됩니다"
+          }
+        }
+      }
+    },
+    "Each catalog URL kept its own cache entry" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カタログ URL ごとに自分のキャッシュを保っています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 URL마다 자기 캐시를 유지했습니다"
           }
         }
       }
@@ -269,6 +557,22 @@
         }
       }
     },
+    "Empty catalog state" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空のカタログ状態"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빈 카탈로그 상태"
+          }
+        }
+      }
+    },
     "Events" : {
       "localizations" : {
         "ja" : {
@@ -301,6 +605,22 @@
         }
       }
     },
+    "Expire the cache, keeping its data" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データを残したままキャッシュを期限切れに"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "데이터는 남기고 캐시를 만료"
+          }
+        }
+      }
+    },
     "Expired (cached %@)" : {
       "localizations" : {
         "en" : {
@@ -323,6 +643,38 @@
         }
       }
     },
+    "Expiring kept the data and marked it stale" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "期限切れ処理がデータを残したまま古い印を付けました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "만료가 데이터를 남긴 채 오래된 것으로 표시했습니다"
+          }
+        }
+      }
+    },
+    "Failed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不合格"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실패"
+          }
+        }
+      }
+    },
     "Force Refresh" : {
       "localizations" : {
         "ja" : {
@@ -335,6 +687,70 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "강제 새로고침"
+          }
+        }
+      }
+    },
+    "Force refresh, from all three entry points" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "強制リフレッシュ（3つの入口すべて）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "강제 새로고침, 진입점 3개 전부"
+          }
+        }
+      }
+    },
+    "Go to the list" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リストへ移動"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목록으로 이동"
+          }
+        }
+      }
+    },
+    "Held next to the empty-catalog case, the two states are told apart at a glance." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空のカタログのケースと並べたとき、2つの状態がひと目で区別できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빈 카탈로그 케이스와 나란히 놓았을 때 두 상태가 한눈에 구분됩니다."
+          }
+        }
+      }
+    },
+    "Host app excluded, catalog order kept" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自アプリの除外とカタログ順の維持"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자기 앱 제외, 카탈로그 순서 유지"
           }
         }
       }
@@ -352,6 +768,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "https://example.com/apps.json"
+          }
+        }
+      }
+    },
+    "Icons and accessibility" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アイコンとアクセシビリティ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아이콘과 접근성"
           }
         }
       }
@@ -404,6 +836,22 @@
         }
       }
     },
+    "In the simulator SKOverlay usually cannot present, so the package falls back to its own \"Open in App Store\" alert. On a simulator that alert is the pass, not a failure." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "シミュレータでは SKOverlay がたいてい表示できないため、パッケージは自前の「App Store で開く」アラートにフォールバックします。シミュレータではそのアラートが失敗ではなく合格です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시뮬레이터에서는 SKOverlay가 대개 표시되지 못해서, 패키지가 자체 \"App Store에서 열기\" 알림으로 폴백합니다. 시뮬레이터에서는 그 알림이 실패가 아니라 통과입니다."
+          }
+        }
+      }
+    },
     "Language Settings switches this app alone, without a rebuild, when iOS offers the row for it. Otherwise use Edit Scheme → Run → Options → App Language." : {
       "localizations" : {
         "ja" : {
@@ -420,6 +868,38 @@
         }
       }
     },
+    "Leave the screen while it is up: it goes away with the promo list." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "表示中に画面を離れると、プロモリストとともに消えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "떠 있는 상태에서 화면을 벗어나면 프로모 목록과 함께 사라집니다."
+          }
+        }
+      }
+    },
+    "List contents" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リストの内容"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목록 구성"
+          }
+        }
+      }
+    },
     "Load Remote URL" : {
       "localizations" : {
         "ja" : {
@@ -432,6 +912,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "원격 URL 불러오기"
+          }
+        }
+      }
+    },
+    "Loading indicator" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ローディングインジケーター"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로딩 인디케이터"
+          }
+        }
+      }
+    },
+    "Loading this catalog changed the other catalog's cache entry." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このカタログを読み込んだことで、別のカタログのキャッシュエントリが変わりました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 카탈로그를 불러오면서 다른 카탈로그의 캐시 항목이 바뀌었습니다."
           }
         }
       }
@@ -516,6 +1028,22 @@
         }
       }
     },
+    "No catalog URL for this scenario yet." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このシナリオにはまだカタログ URL がありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 시나리오에는 아직 카탈로그 URL이 없습니다."
+          }
+        }
+      }
+    },
     "No catalog URL yet. Enter one in the Debug tab." : {
       "localizations" : {
         "ja" : {
@@ -548,6 +1076,22 @@
         }
       }
     },
+    "No refresh has landed yet — the cache is still the one the setup wrote." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まだリフレッシュが届いていません。キャッシュはセットアップが書いたままです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 새로고침이 도착하지 않았습니다. 캐시는 설정이 쓴 그대로입니다."
+          }
+        }
+      }
+    },
     "Normal catalog" : {
       "localizations" : {
         "en" : {
@@ -566,6 +1110,134 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "정상 카탈로그"
+          }
+        }
+      }
+    },
+    "Nothing in the copy blames the network; that wording belongs to the offline state." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文言のどこにもネットワークのせいにする表現がありません。それはオフライン状態の役目です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "문구 어디에도 네트워크를 탓하는 표현이 없습니다. 그런 표현은 오프라인 상태의 몫입니다."
+          }
+        }
+      }
+    },
+    "Nothing left in the cache to fall back on" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャッシュにフォールバックできるものが残っていません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캐시에 폴백할 것이 남아 있지 않습니다"
+          }
+        }
+      }
+    },
+    "Nothing to judge yet" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まだ判定できません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 판정할 수 없음"
+          }
+        }
+      }
+    },
+    "Nothing to judge yet — the package has not reported rendering anything since the setup. Open the list and come back." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まだ判定できることがありません。セットアップ以降、パッケージは何も描画したと報告していません。リストを開いてから戻ってください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 판정할 것이 없습니다. 설정 이후 패키지가 무언가를 그렸다고 보고한 적이 없습니다. 목록을 열었다가 돌아오세요."
+          }
+        }
+      }
+    },
+    "Offline state" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オフライン状態"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오프라인 상태"
+          }
+        }
+      }
+    },
+    "One HTTPS icon loads; the 404 and the unresolvable host both fall back to the package placeholder." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTPS のアイコンが1つ読み込まれ、404 と名前解決できないホストはどちらもパッケージのプレースホルダーになります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HTTPS 아이콘 하나는 로드되고, 404와 해석되지 않는 호스트는 둘 다 패키지 플레이스홀더로 떨어집니다."
+          }
+        }
+      }
+    },
+    "One impression per app" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリごとにインプレッション1回"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱당 노출 1회"
+          }
+        }
+      }
+    },
+    "One impression per app, one event per tap" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリごとにインプレッション1回、タップごとにイベント1回"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱당 노출 1회, 탭마다 이벤트 1회"
           }
         }
       }
@@ -598,6 +1270,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "언어 설정 열기"
+          }
+        }
+      }
+    },
+    "Open the list, scroll the rows out of view and back a few times, then tap one row and come back here." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リストを開き、行を画面外に出しては戻す操作を数回繰り返し、行を1つタップしてからここに戻ってください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목록을 연 뒤 행을 화면 밖으로 내렸다 다시 올리기를 몇 번 반복하고, 행 하나를 탭한 다음 여기로 돌아오세요."
+          }
+        }
+      }
+    },
+    "Passed" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "合格"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "통과"
           }
         }
       }
@@ -656,6 +1360,70 @@
         }
       }
     },
+    "promoRules narrows the list" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "promoRules がリストを絞り込む"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "promoRules가 목록을 좁힙니다"
+          }
+        }
+      }
+    },
+    "Read from the demo's own cache, its catalog file and the events the package reported. The package's PromoService is not visible from here, so nothing below is a claim about what is on screen." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デモ自身のキャッシュ、カタログファイル、パッケージが報告したイベントから読み取った値です。パッケージの PromoService はここからは見えないため、以下は画面表示についての主張ではありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "데모 자신의 캐시, 카탈로그 파일, 패키지가 보고한 이벤트에서 읽은 값입니다. 패키지의 PromoService는 여기서 보이지 않으므로, 아래 항목은 화면에 무엇이 보이는지에 대한 주장이 아닙니다."
+          }
+        }
+      }
+    },
+    "Rebuild the promo view, as reopening the screen would" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画面を開き直したときと同じくプロモビューを作り直す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면을 다시 열었을 때처럼 프로모 뷰를 새로 만들기"
+          }
+        }
+      }
+    },
+    "Refresh Readings" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読み直す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다시 읽기"
+          }
+        }
+      }
+    },
     "Remote Catalog" : {
       "localizations" : {
         "ja" : {
@@ -690,6 +1458,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "원격 아이콘"
+          }
+        }
+      }
+    },
+    "Remote icons and the placeholder" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リモートアイコンとプレースホルダー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원격 아이콘과 플레이스홀더"
           }
         }
       }
@@ -732,6 +1516,118 @@
         }
       }
     },
+    "Rows the package reported rendering" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パッケージが描画したと報告した行"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "패키지가 그렸다고 보고한 행"
+          }
+        }
+      }
+    },
+    "Rows this catalog should produce" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このカタログが生成するはずの行"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 카탈로그가 만들어야 할 행"
+          }
+        }
+      }
+    },
+    "Run \"Host app excluded\" first and look at its list, then come back and run this one. It hands the live promo view a different PromoConfig without rebuilding the view, which is the one thing that made the old catalog stick around." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まず「自アプリの除外とカタログ順の維持」を実行してリストを見てから、ここに戻ってこのケースを実行してください。ビューを作り直さずに、生きているプロモビューへ別の PromoConfig を渡します — 古いカタログが残り続けた原因はこの経路でした。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "먼저 \"자기 앱 제외, 카탈로그 순서 유지\"를 실행해 목록을 본 뒤 돌아와 이 케이스를 실행하세요. 뷰를 다시 만들지 않은 채 살아 있는 프로모 뷰에 다른 PromoConfig를 넘깁니다 — 예전 카탈로그가 계속 남아 있던 원인이 바로 그 경로였습니다."
+          }
+        }
+      }
+    },
+    "Run Setup" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セットアップを実行"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 실행"
+          }
+        }
+      }
+    },
+    "Run Setup Again" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セットアップを再実行"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 다시 실행"
+          }
+        }
+      }
+    },
+    "Run the setup again between entry points so the next one has something new to fetch." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入口を試す合間にセットアップを再実行し、次の入口が新しく取得できるものを用意してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진입점 사이에 설정을 다시 실행해서 다음 진입점이 새로 가져올 것을 만들어 주세요."
+          }
+        }
+      }
+    },
+    "Running the setup only puts the app into the state below. It is not a verdict on anything." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セットアップの実行はアプリを下の状態にするだけで、それ自体は何の判定でもありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 실행은 앱을 아래 상태로 만들 뿐입니다. 그 자체는 어떤 판정도 아닙니다."
+          }
+        }
+      }
+    },
     "Scenario" : {
       "localizations" : {
         "ja" : {
@@ -748,6 +1644,22 @@
         }
       }
     },
+    "Select scenario: %@" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "シナリオを選択：%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시나리오 선택: %@"
+          }
+        }
+      }
+    },
     "Settings" : {
       "localizations" : {
         "ja" : {
@@ -760,6 +1672,70 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "설정"
+          }
+        }
+      }
+    },
+    "Setup" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セットアップ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정"
+          }
+        }
+      }
+    },
+    "Setup ran at" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セットアップ実行時刻"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정 실행 시각"
+          }
+        }
+      }
+    },
+    "Some app was reported more than once in this session." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このセッションで同じアプリが2回以上報告されました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 세션에서 같은 앱이 두 번 이상 보고되었습니다."
+          }
+        }
+      }
+    },
+    "Something fetched and re-cached the catalog even though the cache was valid." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャッシュが有効なのに、何かがカタログを取り直して保存しました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캐시가 유효한데도 무언가가 카탈로그를 다시 가져와 저장했습니다."
           }
         }
       }
@@ -786,6 +1762,22 @@
         }
       }
     },
+    "States the package draws" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パッケージが描く状態"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "패키지가 그리는 상태"
+          }
+        }
+      }
+    },
     "Status" : {
       "localizations" : {
         "ja" : {
@@ -798,6 +1790,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "상태"
+          }
+        }
+      }
+    },
+    "Still the version the setup cached; a fetch would have replaced it." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セットアップがキャッシュしたバージョンのままです。フェッチしていれば置き換わっていたはずです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정이 캐시한 버전 그대로입니다. 네트워크를 탔다면 교체되었을 것입니다."
+          }
+        }
+      }
+    },
+    "Swapping the config rebuilds the list" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "config を差し替えるとリストが作り直される"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "config를 바꾸면 목록이 다시 만들어집니다"
+          }
+        }
+      }
+    },
+    "Switch the app language from Debug → Open Language Settings and check en, ko and ja for clipped or untranslated text." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debug →「言語設定を開く」でアプリの言語を切り替え、en・ko・ja に見切れや未翻訳がないか確認します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debug → 언어 설정 열기로 앱 언어를 바꿔 en·ko·ja에서 잘리거나 번역되지 않은 문구가 없는지 확인합니다."
           }
         }
       }
@@ -834,6 +1874,102 @@
         }
       }
     },
+    "Tap a different row while it is up: the previous one is replaced rather than stacked." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "その状態で別の行をタップすると、前のものが重ならずに置き換わります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "그 상태에서 다른 행을 탭하면 이전 것이 쌓이지 않고 교체됩니다."
+          }
+        }
+      }
+    },
+    "Tap a row: the overlay — or the fallback alert — appears." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行をタップするとオーバーレイ（またはフォールバックのアラート）が出ます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "행을 탭하면 오버레이(또는 폴백 알림)가 뜹니다."
+          }
+        }
+      }
+    },
+    "Taps reported" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "報告されたタップ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보고된 탭"
+          }
+        }
+      }
+    },
+    "The cache holds neither the seeded version nor the file's." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャッシュにはセットアップが入れたバージョンもファイルのバージョンもありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캐시에 설정이 넣은 버전도, 파일 버전도 들어 있지 않습니다."
+          }
+        }
+      }
+    },
+    "The cache is expired and the catalog file is gone, so the fetch fails. The stale list has to stand in for it instead of an empty state." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャッシュは期限切れ、カタログファイルは削除済みなのでフェッチは失敗します。空の状態ではなく、古いリストが代わりを務めるはずです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캐시는 만료되었고 카탈로그 파일은 사라져서 요청이 실패합니다. 빈 상태가 아니라 오래된 목록이 그 자리를 대신해야 합니다."
+          }
+        }
+      }
+    },
+    "The cache now holds the file's version" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャッシュがファイルのバージョンを保持しています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캐시가 파일 버전을 담고 있습니다"
+          }
+        }
+      }
+    },
     "The catalog parses but holds no apps, so the package renders its own EmptyStateView.noApps." : {
       "localizations" : {
         "ja" : {
@@ -866,6 +2002,182 @@
         }
       }
     },
+    "The Catalog v… row in the list shows the cached number above, not the file number." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リストの Catalog v… 行に、ファイルの番号ではなく上のキャッシュの番号が出ます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목록의 Catalog v… 행에 파일 번호가 아니라 위의 캐시 번호가 보입니다."
+          }
+        }
+      }
+    },
+    "The demo cannot judge these. Nothing here is ever marked passed." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デモには判定できない項目です。ここに合格の印が付くことはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "데모가 판정할 수 없는 항목입니다. 여기에는 통과 표시가 절대 붙지 않습니다."
+          }
+        }
+      }
+    },
+    "The empty state reads \"No Apps Yet\" under an app.badge.fill icon." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空の状態が app.badge.fill アイコンの下に「紹介できるアプリがありません」と表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빈 상태가 app.badge.fill 아이콘 아래 \"소개할 앱이 없습니다\"로 나옵니다."
+          }
+        }
+      }
+    },
+    "The empty state reads \"You're Offline\" under a wifi.slash icon." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空の状態が wifi.slash アイコンの下に「オフラインです」と表示されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빈 상태가 wifi.slash 아이콘 아래 \"오프라인 상태입니다\"로 나옵니다."
+          }
+        }
+      }
+    },
+    "The host app never promotes itself, and the rows that remain keep the order the catalog file lists them in (FR-016)." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ホストアプリは自分自身を宣伝せず、残った行はカタログファイルに書かれた順序を保ちます（FR-016）。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "호스트 앱은 자기 자신을 홍보하지 않으며, 남은 행은 카탈로그 파일에 적힌 순서를 그대로 지킵니다(FR-016)."
+          }
+        }
+      }
+    },
+    "The list area keeps the package's spinner until the request times out — around a minute — instead of dropping to an empty state." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リスト領域にパッケージのスピナーがタイムアウトまで（1分ほど）表示され続け、空の状態に落ちません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목록 자리에 패키지의 스피너가 요청이 타임아웃될 때까지(1분 남짓) 유지되고, 빈 상태로 떨어지지 않습니다."
+          }
+        }
+      }
+    },
+    "The list is the promo-rules catalog now, not the one that was on screen a moment ago." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リストがさっきまでのカタログではなく、プロモルールのカタログに変わっています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목록이 방금 보던 카탈로그가 아니라 프로모 규칙 카탈로그로 바뀌어 있습니다."
+          }
+        }
+      }
+    },
+    "The load left the cached catalog alone" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読み込みがキャッシュ済みカタログに手を付けていません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로드가 캐시된 카탈로그를 건드리지 않았습니다"
+          }
+        }
+      }
+    },
+    "The offline state is there on arrival, and a pull-to-refresh does not bring the rows back." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画面に入った時点でオフライン状態が出ており、引っ張って更新しても行は戻りません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면에 들어서자마자 오프라인 상태가 보이고, 당겨서 새로고침해도 행이 돌아오지 않습니다."
+          }
+        }
+      }
+    },
+    "The old rows are there on arrival, and stay put through a pull-to-refresh; no offline state appears." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "画面に入った時点で古い行がそのまま残り、引っ張って更新しても維持されます。オフライン状態は出ません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면에 들어서자마자 오래된 행이 그대로 있고, 당겨서 새로고침해도 유지됩니다. 오프라인 상태는 나오지 않습니다."
+          }
+        }
+      }
+    },
+    "The refresh button reads as \"Force Refresh\"." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新ボタンが「強制リフレッシュ」と読み上げられます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새로고침 버튼이 \"강제 새로고침\"으로 읽힙니다."
+          }
+        }
+      }
+    },
     "The request goes to an unroutable address and hangs, so the package keeps showing its own loading indicator until the request times out." : {
       "localizations" : {
         "ja" : {
@@ -878,6 +2190,150 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "도달할 수 없는 주소로 요청이 나가 응답이 없으므로, 타임아웃될 때까지 패키지의 로딩 표시기가 계속 보입니다."
+          }
+        }
+      }
+    },
+    "The rows appear in the same order as the expected list above." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行が上の想定リストと同じ順序で並びます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "행이 위의 예상 목록과 같은 순서로 나옵니다."
+          }
+        }
+      }
+    },
+    "The same failed fetch as the previous case, minus the cache. This is the control that proves the stale list came from the cache and not from somewhere else." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前のケースと同じくフェッチは失敗しますが、キャッシュがありません。先ほどの古いリストが本当にキャッシュ由来だったことを示す対照群です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앞 케이스와 똑같이 요청이 실패하지만 캐시는 없습니다. 앞의 오래된 목록이 정말 캐시에서 나왔다는 것을 보이는 대조군입니다."
+          }
+        }
+      }
+    },
+    "The setup did not cache a catalog, so there is no version to compare against." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "セットアップがカタログをキャッシュしていないため、比較するバージョンがありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정이 카탈로그를 캐시하지 않아 비교할 버전이 없습니다."
+          }
+        }
+      }
+    },
+    "The sf-symbol:// row draws the symbol itself rather than a placeholder." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sf-symbol:// の行はプレースホルダーではなくシンボル自体を描きます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sf-symbol:// 행은 플레이스홀더가 아니라 심볼 자체를 그립니다."
+          }
+        }
+      }
+    },
+    "This catalog cannot be read from here." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このカタログはここからは読めません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 카탈로그는 여기서 읽을 수 없습니다."
+          }
+        }
+      }
+    },
+    "This catalog filled its own entry while the other one kept the version the setup cached." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このカタログは自分のエントリを埋め、もう一方はセットアップがキャッシュしたバージョンを保っています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 카탈로그는 자기 항목을 채웠고, 다른 카탈로그는 설정이 캐시한 버전을 그대로 유지했습니다."
+          }
+        }
+      }
+    },
+    "This is not the set the catalog file calls for." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カタログファイルが求める集合と一致しません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 파일이 요구하는 집합이 아닙니다."
+          }
+        }
+      }
+    },
+    "Turn VoiceOver on (Settings → Accessibility → VoiceOver, or triple-click the side button) before going to the list." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リストへ行く前に VoiceOver をオンにしてください（設定 → アクセシビリティ → VoiceOver、またはサイドボタンのトリプルクリック）。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목록으로 가기 전에 VoiceOver를 켜 주세요(설정 → 손쉬운 사용 → VoiceOver, 또는 측면 버튼 세 번 클릭)."
+          }
+        }
+      }
+    },
+    "Two catalog URLs in one app keep independent cache entries, so loading one must not overwrite or answer for the other." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1つのアプリ内の2つのカタログ URL は独立したキャッシュを持ちます。一方を読み込んでも他方を上書きしたり肩代わりしたりしてはいけません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "한 앱 안의 두 카탈로그 URL은 서로 독립된 캐시를 씁니다. 한쪽을 불러와도 다른 쪽을 덮어쓰거나 대신 응답해서는 안 됩니다."
           }
         }
       }
@@ -966,6 +2422,86 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "버전 %lld"
+          }
+        }
+      }
+    },
+    "VoiceOver and the three languages" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VoiceOver と3言語"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VoiceOver와 3개 언어"
+          }
+        }
+      }
+    },
+    "VoiceOver reads each promo row as one element — name, category and tagline together — not as three separate stops." : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VoiceOver が各プロモ行を名前・カテゴリ・タグラインをまとめた1つの要素として読み、3回に分けて止まりません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VoiceOver가 각 프로모 행을 이름·카테고리·태그라인이 묶인 하나의 요소로 읽고, 세 번 나눠 멈추지 않습니다."
+          }
+        }
+      }
+    },
+    "What the demo can see" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "デモから見えるもの"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "데모가 볼 수 있는 것"
+          }
+        }
+      }
+    },
+    "What this checks" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "何を確かめるか"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무엇을 검증하는가"
+          }
+        }
+      }
+    },
+    "Write the catalog file back" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カタログファイルを書き戻す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카탈로그 파일 다시 쓰기"
           }
         }
       }

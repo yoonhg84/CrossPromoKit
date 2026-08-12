@@ -24,6 +24,25 @@ final class DemoCatalogStore {
     /// UserDefaults key holding the version currently written to the file.
     private static let versionKey = "demo.catalogVersion"
 
+    /// ID of the extra row, so a catalog read back from the cache can be
+    /// recognised without matching on display text.
+    private static let versionRowID = "catalog-version"
+
+    /// The part of the row's name before the number.
+    private static let versionRowPrefix = "Catalog v"
+
+    /// Reads the file version out of a catalog, wherever it came from.
+    ///
+    /// Lets a cached catalog answer "which version of the file is in here?",
+    /// which is how the demo tells a cache that was replaced by a fetch from one
+    /// that was left alone.
+    /// - Parameter catalog: A catalog the demo wrote, directly or through the cache.
+    /// - Returns: The version, or nil if this catalog carries no version row.
+    static func version(in catalog: AppCatalog) -> Int? {
+        guard let row = catalog.apps.first(where: { $0.id == versionRowID }) else { return nil }
+        return Int(row.name.dropFirst(versionRowPrefix.count))
+    }
+
     /// Version number embedded in the file's extra row.
     private(set) var version: Int
 
@@ -101,8 +120,8 @@ final class DemoCatalogStore {
     /// the other fixtures instead of in the String Catalog.
     private func versionRow(_ version: Int) -> PromoApp {
         PromoApp(
-            id: "catalog-version",
-            name: "Catalog v\(version)",
+            id: Self.versionRowID,
+            name: "\(Self.versionRowPrefix)\(version)",
             appStoreID: "1234567899",
             iconURL: URL(string: "sf-symbol://number.circle.fill") ?? url,
             category: "Debug",
