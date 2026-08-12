@@ -1,0 +1,53 @@
+{
+  "apps": [
+    {
+      "id": "remote-icon-ok",
+      "name": "RemoteIcon",
+      "appStoreID": "1234567895",
+      "iconURL": "https://raw.githubusercontent.com/yoonhg84/CrossPromoKit/main/docs/images/demo-screenshot.png",
+      "category": "Photo & Video",
+      "tagline": {
+        "en": "HTTPS icon that should load over the network",
+        "ko": "네트워크로 로드되어야 하는 HTTPS 아이콘",
+        "ja": "ネットワーク経由で読み込まれる HTTPS アイコン"
+      }
+    },
+    {
+      "id": "remote-icon-404",
+      "name": "MissingIcon",
+      "appStoreID": "1234567896",
+      "iconURL": "https://raw.githubusercontent.com/yoonhg84/CrossPromoKit/main/docs/images/does-not-exist.png",
+      "category": "Utilities",
+      "tagline": {
+        "en": "HTTPS icon that 404s, so the placeholder is shown",
+        "ko": "404가 나는 HTTPS 아이콘이라 플레이스홀더가 표시됩니다",
+        "ja": "404 になる HTTPS アイコンなのでプレースホルダーが表示されます"
+      }
+    },
+    {
+      "id": "remote-icon-unreachable",
+      "name": "UnreachableIcon",
+      "appStoreID": "1234567897",
+      "iconURL": "https://invalid.invalid/icon.png",
+      "category": "Utilities",
+      "tagline": {
+        "en": "Host does not resolve, so the placeholder is shown",
+        "ko": "호스트가 해석되지 않아 플레이스홀더가 표시됩니다",
+        "ja": "ホストが解決できないためプレースホルダーが表示されます"
+      }
+    },
+    {
+      "id": "symbol-icon",
+      "name": "SymbolIcon",
+      "appStoreID": "1234567898",
+      "iconURL": "sf-symbol://cloud.sun.fill",
+      "category": "Weather",
+      "tagline": {
+        "en": "sf-symbol:// icon, drawn without any network access",
+        "ko": "네트워크 없이 그려지는 sf-symbol:// 아이콘",
+        "ja": "ネットワークなしで描画される sf-symbol:// アイコン"
+      }
+    }
+  ],
+  "promoRules": null
+}

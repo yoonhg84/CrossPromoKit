@@ -1,0 +1,67 @@
+{
+  "apps": [
+    {
+      "id": "photomagic",
+      "name": "PhotoMagic",
+      "appStoreID": "1234567890",
+      "iconURL": "sf-symbol://camera.filters",
+      "category": "Photo & Video",
+      "tagline": {
+        "en": "Transform your photos with AI magic",
+        "ko": "AI 마법으로 사진을 변환하세요",
+        "ja": "AIマジックで写真を変換"
+      }
+    },
+    {
+      "id": "weatherpal",
+      "name": "WeatherPal",
+      "appStoreID": "1234567891",
+      "iconURL": "sf-symbol://cloud.sun.fill",
+      "category": "Weather",
+      "tagline": {
+        "en": "Allowed by promoRules for photomagic",
+        "ko": "photomagic의 promoRules가 허용한 앱",
+        "ja": "photomagic の promoRules で許可されたアプリ"
+      }
+    },
+    {
+      "id": "fittrack",
+      "name": "FitTrack",
+      "appStoreID": "1234567892",
+      "iconURL": "sf-symbol://figure.run",
+      "category": "Health & Fitness",
+      "tagline": {
+        "en": "Filtered out by promoRules",
+        "ko": "promoRules에 의해 걸러지는 앱",
+        "ja": "promoRules によって除外されるアプリ"
+      }
+    },
+    {
+      "id": "noteflow",
+      "name": "NoteFlow",
+      "appStoreID": "1234567893",
+      "iconURL": "sf-symbol://note.text",
+      "category": "Productivity",
+      "tagline": {
+        "en": "Filtered out by promoRules",
+        "ko": "promoRules에 의해 걸러지는 앱",
+        "ja": "promoRules によって除外されるアプリ"
+      }
+    },
+    {
+      "id": "budgetwise",
+      "name": "BudgetWise",
+      "appStoreID": "1234567894",
+      "iconURL": "sf-symbol://dollarsign.circle.fill",
+      "category": "Finance",
+      "tagline": {
+        "en": "Allowed by promoRules for photomagic",
+        "ko": "photomagic의 promoRules가 허용한 앱",
+        "ja": "photomagic の promoRules で許可されたアプリ"
+      }
+    }
+  ],
+  "promoRules": {
+    "photomagic": ["weatherpal", "budgetwise"]
+  }
+}
