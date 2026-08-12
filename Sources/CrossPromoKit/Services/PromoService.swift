@@ -79,8 +79,13 @@ public final class PromoService {
 
     // MARK: - Public Methods
 
-    /// Loads apps using three-tier fallback: Network → Cache → Empty State.
-    /// Automatically saves successful network responses to cache.
+    /// Loads apps, preferring an unexpired cache over the network.
+    ///
+    /// A cache entry younger than ``CacheManager``'s 24-hour expiration is used
+    /// as-is and **no network request is made**, so re-entering the promo UI
+    /// does not re-fetch the catalog every time. Only a missing or expired
+    /// cache falls through to the network, which then falls back to
+    /// Network → Cache → Empty State as before.
     ///
     /// Calls that arrive while a load is already running are coalesced: they
     /// return immediately without starting a second fetch, and without waiting
@@ -88,15 +93,27 @@ public final class PromoService {
     /// that is fresh as of the moment it asked.
     public func loadApps() async {
         guard loadTask == nil else { return }
-        await beginLoad().value
+        await beginLoad(ignoringValidCache: false).value
     }
 
     /// Fetches the catalog and publishes the result.
     ///
-    /// Callers must go through ``beginLoad()`` so the in-flight task is tracked.
-    private func performLoad() async {
+    /// Callers must go through ``beginLoad(ignoringValidCache:)`` so the
+    /// in-flight task is tracked.
+    /// - Parameter ignoringValidCache: When true, skips the cache-first tier and
+    ///   goes straight to the network. The cache is still read as a fallback if
+    ///   that fetch fails.
+    private func performLoad(ignoringValidCache: Bool) async {
         isLoading = true
         error = nil
+
+        // Tier 0: An unexpired cache answers without touching the network.
+        if !ignoringValidCache, let validCatalog = await cacheManager.loadIfValid() {
+            catalog = validCatalog
+            apps = filterApps(from: validCatalog)
+            isLoading = false
+            return
+        }
 
         // Tier 1: Try network fetch
         do {
@@ -123,12 +140,15 @@ public final class PromoService {
         isLoading = false
     }
 
-    /// Forces a refresh from the network.
+    /// Forces a refresh from the network, ignoring an unexpired cache.
     ///
-    /// Unlike ``loadApps()``, a refresh is never dropped: if a load is already
-    /// in flight this waits for that load to finish and then runs its own
-    /// fetch, so by the time the call returns ``apps`` reflects a fetch that
-    /// started after the refresh was requested.
+    /// This is the cache-bypass counterpart to ``loadApps()``: where a valid
+    /// cache short-circuits a normal load, a refresh always goes to the network.
+    ///
+    /// A refresh is also never dropped: if a load is already in flight this
+    /// waits for that load to finish and then runs its own fetch, so by the time
+    /// the call returns ``apps`` reflects a fetch that started after the refresh
+    /// was requested.
     ///
     /// The existing cache is kept so it can still serve as a fallback if the
     /// network fetch fails; a successful fetch overwrites it.
@@ -139,7 +159,7 @@ public final class PromoService {
         while let inFlight = loadTask {
             await inFlight.value
         }
-        await beginLoad().value
+        await beginLoad(ignoringValidCache: true).value
     }
 
     /// Handles app row tap event and presents App Store overlay.
@@ -211,9 +231,11 @@ public final class PromoService {
     /// slot itself on completion. Clearing it from inside the task — rather
     /// than after awaiting it — is what lets ``forceRefresh()`` observe `nil`
     /// as soon as the load it was waiting on is done.
-    private func beginLoad() -> Task<Void, Never> {
+    /// - Parameter ignoringValidCache: Forwarded to
+    ///   ``performLoad(ignoringValidCache:)``; true for a forced refresh.
+    private func beginLoad(ignoringValidCache: Bool) -> Task<Void, Never> {
         let task = Task {
-            await self.performLoad()
+            await self.performLoad(ignoringValidCache: ignoringValidCache)
             self.loadTask = nil
         }
         loadTask = task

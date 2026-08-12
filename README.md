@@ -13,7 +13,7 @@ CrossPromoKit enables seamless cross-promotion between your iOS apps using a rem
 - **SwiftUI Native**: Drop-in `MoreAppsView` component for your settings screen
 - **SKOverlay Integration**: In-app App Store overlay for frictionless discovery
 - **Remote Configuration**: JSON-based app catalog hosted anywhere (GitHub, CDN, etc.)
-- **Three-Tier Fallback**: Network → Cache → Empty State for reliability
+- **Cache-First Loading**: A cache younger than 24 hours is served without a network request; a fetch falls back to Cache → Empty State
 - **Analytics Ready**: Delegate-based event tracking for impressions and taps
 - **Promo Rules**: Control which apps promote which with customizable rules
 - **Localization**: Localized UI strings (English, Korean, Japanese) plus localized catalog taglines
@@ -223,17 +223,25 @@ class PromoService {
     var error: Error?         // Error state
     weak var eventDelegate: PromoEventDelegate? // Analytics delegate (weak — retain it yourself)
 
-    func loadApps() async     // Load with fallback
-    func forceRefresh() async // Reload from the network
+    func loadApps() async     // Valid cache, else network, else stale cache
+    func forceRefresh() async // Always reload from the network
     func handleAppTap(_ app: PromoApp)        // Trigger overlay
     func handleAppImpression(_ app: PromoApp) // Track impression
     func dismissOverlay()     // Dismiss the App Store overlay this service presented
 }
 ```
 
-`forceRefresh()` runs the same Network → Cache → Empty State path as `loadApps()`:
-there is no cache-bypass, the cache is only a fallback for a failed fetch, and a
-successful fetch overwrites it.
+`loadApps()` is cache-first. If the cache holds an entry younger than 24 hours it
+is used as-is and **no network request is made**, so re-entering the promo screen
+does not re-fetch the catalog. Only a missing or expired cache goes to the
+network, and that fetch falls back as before: on failure the cached catalog is
+shown even when it is expired — stale promotions beat an empty list while offline
+— and `error` stays `nil` whenever cached data is displayed. Only a failure with
+no cache at all sets `error` and shows the empty state.
+
+`forceRefresh()` is the cache bypass: it ignores an unexpired cache and always
+fetches. The existing entry is kept so it can still serve as a fallback if that
+fetch fails; a successful fetch overwrites it.
 
 `dismissOverlay()` retires the SKOverlay this service is presenting, if any. The
 overlay lives on the window scene rather than on the view, so it would otherwise
