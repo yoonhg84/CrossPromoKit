@@ -10,11 +10,18 @@ import Testing
 final class GatedURLProtocol: URLProtocol, @unchecked Sendable {
     nonisolated(unsafe) private static var responder: GatedURLProtocol.Responder?
 
+    /// Serves bodies in arrival order and holds the first request open until
+    /// ``release()``.
+    ///
+    /// Nothing ever blocks a thread: the held request is parked as a closure and
+    /// run when the gate opens, so URL loading elsewhere in the process — other
+    /// suites run in parallel with this one — is never stalled behind the gate.
     final class Responder: @unchecked Sendable {
         private let lock = NSLock()
-        private let gate = DispatchSemaphore(value: 0)
         private let bodies: [Data]
         private var served = 0
+        private var held: (@Sendable () -> Void)?
+        private var isReleased = false
 
         /// - Parameter bodies: Response bodies, one per request in arrival order.
         ///   The last one repeats if more requests arrive.
@@ -27,9 +34,17 @@ final class GatedURLProtocol: URLProtocol, @unchecked Sendable {
             lock.withLock { served }
         }
 
-        /// Lets the first (held) request complete.
+        /// Opens the gate, completing the held request if one is waiting.
         func release() {
-            gate.signal()
+            let pending: (@Sendable () -> Void)? = lock.withLock {
+                isReleased = true
+                let pending = held
+                held = nil
+                return pending
+            }
+            if let pending {
+                DispatchQueue.global().async(execute: pending)
+            }
         }
 
         fileprivate func body(for index: Int) -> Data {
@@ -43,8 +58,18 @@ final class GatedURLProtocol: URLProtocol, @unchecked Sendable {
             }
         }
 
-        fileprivate func waitIfFirst(_ index: Int) {
-            if index == 0 { gate.wait() }
+        /// Parks `deliver` until the gate opens, or runs it now if it already has.
+        fileprivate func gate(_ deliver: @escaping @Sendable () -> Void) {
+            let runNow = lock.withLock { () -> Bool in
+                guard isReleased else {
+                    held = deliver
+                    return false
+                }
+                return true
+            }
+            if runNow {
+                DispatchQueue.global().async(execute: deliver)
+            }
         }
     }
 
@@ -72,8 +97,20 @@ final class GatedURLProtocol: URLProtocol, @unchecked Sendable {
         }
 
         let index = responder.claimIndex()
-        responder.waitIfFirst(index)
+        let body = responder.body(for: index)
+        let deliver: @Sendable () -> Void = { [weak self] in self?.finish(with: body) }
 
+        // Only the first request is gated; later ones answer straight away.
+        if index == 0 {
+            responder.gate(deliver)
+        } else {
+            deliver()
+        }
+    }
+
+    override func stopLoading() {}
+
+    private func finish(with body: Data) {
         let response = HTTPURLResponse(
             url: request.url!,
             statusCode: 200,
@@ -81,11 +118,9 @@ final class GatedURLProtocol: URLProtocol, @unchecked Sendable {
             headerFields: ["Content-Type": "application/json"]
         )!
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-        client?.urlProtocol(self, didLoad: responder.body(for: index))
+        client?.urlProtocol(self, didLoad: body)
         client?.urlProtocolDidFinishLoading(self)
     }
-
-    override func stopLoading() {}
 }
 
 /// Records a value observed from inside a concurrently started task.
