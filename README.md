@@ -50,11 +50,18 @@ Add CrossPromoKit to your project via SPM:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/user/CrossPromoKit.git", from: "1.0.0")
+    .package(url: "https://github.com/yoonhg84/CrossPromoKit.git", branch: "main")
 ]
 ```
 
-Or in Xcode: File → Add Package Dependencies → Enter the repository URL.
+The repository has no tagged release yet, so a version requirement such as
+`from: "1.0.0"` cannot be resolved — depend on a branch (or a specific commit via
+`revision:`) for now. Once a version is tagged, switch to
+`.package(url: "https://github.com/yoonhg84/CrossPromoKit.git", from: "x.y.z")`.
+
+Or in Xcode: File → Add Package Dependencies → enter
+`https://github.com/yoonhg84/CrossPromoKit.git` and choose the **Branch** rule with
+`main`.
 
 ## Quick Start
 
@@ -142,6 +149,12 @@ let handler = AnalyticsHandler()
 MoreAppsView(config: config, eventDelegate: handler)
 ```
 
+> **Retain your handler.** `PromoService.eventDelegate` is a `weak` reference, so
+> the delegate must be kept alive by something else — a stored property on your
+> view model or another long-lived object. A handler created as a local variable is
+> deallocated as soon as that scope ends and events simply stop arriving, with no
+> error.
+
 ### Promo Rules
 
 Control which apps can promote which apps:
@@ -208,13 +221,41 @@ class PromoService {
     var apps: [PromoApp]      // Current filtered apps
     var isLoading: Bool       // Loading state
     var error: Error?         // Error state
+    weak var eventDelegate: PromoEventDelegate? // Analytics delegate (weak — retain it yourself)
 
     func loadApps() async     // Load with fallback
-    func forceRefresh() async // Bypass cache
-    func handleAppTap(_ app: PromoApp)       // Trigger overlay
+    func forceRefresh() async // Reload from the network
+    func handleAppTap(_ app: PromoApp)        // Trigger overlay
     func handleAppImpression(_ app: PromoApp) // Track impression
+    func dismissOverlay()     // Dismiss the App Store overlay this service presented
 }
 ```
+
+`forceRefresh()` runs the same Network → Cache → Empty State path as `loadApps()`:
+there is no cache-bypass, the cache is only a fallback for a failed fetch, and a
+successful fetch overwrites it.
+
+`dismissOverlay()` retires the SKOverlay this service is presenting, if any. The
+overlay lives on the window scene rather than on the view, so it would otherwise
+outlive the promo UI; `MoreAppsView` calls this in `onDisappear`. Calling it with
+no overlay presented is a no-op.
+
+### CacheManager
+
+The catalog cache (UserDefaults-backed, 24-hour expiration).
+
+```swift
+actor CacheManager {
+    init(scope: URL, userDefaults: UserDefaults = .standard)
+    init(scopeIdentifier: String, userDefaults: UserDefaults = .standard)
+}
+```
+
+Cache entries are **scoped to the catalog URL** the data came from, so two
+`PromoConfig` values in the same app keep independent caches instead of
+overwriting each other. `PromoService` builds its own `CacheManager(scope:)` from
+`config.jsonURL` by default; pass one explicitly only if you need a different
+namespace or a separate `UserDefaults` suite.
 
 ### PromoEvent
 
@@ -238,7 +279,7 @@ enum PromoEvent {
       "id": "string",           // Unique identifier
       "name": "string",         // Display name
       "appStoreID": "string",   // App Store numeric ID
-      "iconURL": "string",      // HTTPS URL to icon
+      "iconURL": "string",      // Image URL, or sf-symbol://<symbol-name>
       "category": "string",     // Category label
       "tagline": {              // Localized descriptions
         "en": "string",
@@ -254,7 +295,14 @@ enum PromoEvent {
 
 ### Notes
 
-- `iconURL` must be HTTPS
+- `iconURL` takes either a remote image URL (HTTPS recommended; plain HTTP is
+  subject to App Transport Security) or an `sf-symbol://<symbol-name>` URL — e.g.
+  `"sf-symbol://cloud.sun.fill"` — which draws that SF Symbol locally instead of
+  downloading an image. Anything that is not `sf-symbol://` is handed to
+  SwiftUI's `AsyncImage`, which falls back to a placeholder icon if the image
+  cannot be loaded. The `Example/CrossPromoDemo` catalog uses the SF Symbol form.
+- The catalog URL itself (`PromoConfig.jsonURL`) may be `https://`, `http://`, or
+  a `file://` URL, so a JSON file bundled with the app works for demos and tests.
 - `tagline` falls back to English if user's locale isn't available
 - Apps are displayed in JSON array order
 - The current app is always excluded automatically
