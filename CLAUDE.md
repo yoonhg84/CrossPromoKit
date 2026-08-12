@@ -24,7 +24,7 @@ Sources/CrossPromoKit/
 Tests/CrossPromoKitTests/      swift-testing suites + StubURLProtocol/TestFixtures
 Example/CrossPromoDemo/        demo app (CrossPromoDemo.xcodeproj, consumes the local package)
 docs/images/                   README assets
-specs/                         spec-kit feature specs (001-cross-promo-kit, 002-demo-app)
+specs/                         historical requirement docs (FR-### references in code point here)
 ```
 
 ## Commands
@@ -59,6 +59,10 @@ CI runs the same `--strict` invocation, so any warning fails the build.
 - `.swiftlint.yml` opt-ins ban `force_unwrapping` and implicitly unwrapped
   optionals; `line_length` and `trailing_whitespace` are disabled.
 - Tests use swift-testing (`import Testing`, `@Test`/`@Suite`), not XCTest.
-
-<!-- MANUAL ADDITIONS START -->
-<!-- MANUAL ADDITIONS END -->
+- UI is SwiftUI-only; observable state uses the `@Observable` macro, never
+  `ObservableObject`/`@Published`.
+- Offline-first: a failed fetch falls back to cache and degrades silently — never
+  block rendering or surface an error dialog for a network failure.
+- Keep the package dependency-free; use system frameworks. Adding a runtime
+  dependency needs an explicit justification in the PR.
+- Public types and methods carry doc comments; public API changes update the README.
