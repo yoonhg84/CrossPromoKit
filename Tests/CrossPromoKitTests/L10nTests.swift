@@ -53,6 +53,44 @@ struct L10nTests {
         }
     }
 
+    /// Words that only belong in a load-failure message. The "no apps" state is
+    /// reached *after* a successful load, so telling that user to check their
+    /// connection describes a problem they do not have — the bug this guards.
+    private static let networkFailureTerms = [
+        "en": ["network", "connection", "couldn't load", "try again"],
+        "ko": ["네트워크", "연결", "불러올 수 없"],
+        "ja": ["ネットワーク", "接続", "読み込めませんでした"]
+    ]
+
+    @Test("the no-apps copy does not blame the network, and differs from the offline copy")
+    func noAppsCopyDescribesAnEmptyCatalog() throws {
+        for language in Locale.SupportedLanguage.allCases {
+            let path = try #require(Bundle.module.path(forResource: language.rawValue, ofType: "lproj"))
+            let bundle = try #require(Bundle(path: path))
+            func value(_ key: String) -> String {
+                bundle.localizedString(forKey: key, value: nil, table: nil)
+            }
+
+            let title = value("emptyState.noApps.title")
+            let message = value("emptyState.noApps.message")
+            let terms = try #require(Self.networkFailureTerms[language.rawValue])
+
+            for term in terms {
+                #expect(
+                    !title.lowercased().contains(term),
+                    "no-apps title in \(language.rawValue) reads as a load failure: \(term)"
+                )
+                #expect(
+                    !message.lowercased().contains(term),
+                    "no-apps message in \(language.rawValue) reads as a load failure: \(term)"
+                )
+            }
+
+            #expect(title != value("emptyState.offline.title"))
+            #expect(message != value("emptyState.offline.message"))
+        }
+    }
+
     @Test("promo row label substitutes name, category and tagline in every language")
     func promoRowLabelSubstitutesArguments() throws {
         let name = "FineBill"

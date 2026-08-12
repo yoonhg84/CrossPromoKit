@@ -12,10 +12,10 @@ enum L10n {
     /// "Cancel" — cancel button title.
     static var cancel: String { string("common.cancel") }
 
-    /// Title shown when the app list could not be loaded.
+    /// Title shown when the catalog loaded but holds no apps to promote.
     static var noAppsTitle: String { string("emptyState.noApps.title") }
 
-    /// Message shown when the app list could not be loaded.
+    /// Message shown when the catalog loaded but holds no apps to promote.
     static var noAppsMessage: String { string("emptyState.noApps.message") }
 
     /// Title shown when the device is offline.
