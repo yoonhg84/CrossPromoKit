@@ -216,6 +216,54 @@
           }
         }
       }
+    },
+    "promoRow.accessibilityHint" : {
+      "comment" : "VoiceOver hint describing what activating an app row does",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens this app on the App Store"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このアプリをApp Storeで開きます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Store에서 이 앱을 엽니다"
+          }
+        }
+      }
+    },
+    "promoRow.accessibilityLabel" : {
+      "comment" : "VoiceOver label for an app row: %1$@ app name, %2$@ category, %3$@ tagline",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@ category, %3$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@、%2$@カテゴリ、%3$@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$@ 카테고리, %3$@"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
