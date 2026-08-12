@@ -37,10 +37,17 @@ public final class PromoService: Sendable {
 
     // MARK: - Initialization
 
+    /// Creates a service for the given configuration.
+    /// - Parameters:
+    ///   - config: The catalog URL and host app identifier.
+    ///   - networkClient: The client used to fetch the catalog.
+    ///   - cacheManager: Cache to read and write. Defaults to one scoped to
+    ///     `config.jsonURL`, so services built from different configurations do
+    ///     not share cache entries.
     public convenience init(
         config: PromoConfig,
         networkClient: NetworkClient = NetworkClient(),
-        cacheManager: CacheManager = CacheManager()
+        cacheManager: CacheManager? = nil
     ) {
         self.init(
             config: config,
@@ -54,12 +61,12 @@ public final class PromoService: Sendable {
     init(
         config: PromoConfig,
         networkClient: NetworkClient = NetworkClient(),
-        cacheManager: CacheManager = CacheManager(),
+        cacheManager: CacheManager? = nil,
         overlayPresenter: AppStoreOverlayPresenting
     ) {
         self.config = config
         self.networkClient = networkClient
-        self.cacheManager = cacheManager
+        self.cacheManager = cacheManager ?? CacheManager(scope: config.jsonURL)
         self.overlayPresenter = overlayPresenter
     }
 
