@@ -3,7 +3,9 @@ import CrossPromoKit
 
 struct SettingsView: View {
     @Environment(DemoViewModel.self) private var viewModel
-    private let eventHandler = DemoEventHandler()
+    // `PromoService` holds `eventDelegate` weakly, so the handler needs an owner
+    // that outlives the view value. `@State` ties it to the view's identity.
+    @State private var eventHandler = DemoEventHandler()
 
     var body: some View {
         NavigationStack {
