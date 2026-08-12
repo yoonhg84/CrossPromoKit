@@ -1,32 +1,61 @@
 # CrossPromoKit Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2026-01-19
+## Overview
 
-## Active Technologies
-- Swift 6 with `swiftLanguageModes: [.v6]` + CrossPromoKit (local package), SwiftUI, StoreKi (002-demo-app)
-- N/A (bundled JSON only) (002-demo-app)
+Swift package (SPM) providing a drop-in SwiftUI `MoreAppsView` for cross-promoting
+your other iOS apps from a remote JSON catalog, with SKOverlay-based App Store
+presentation.
 
-- Swift 6.0 with strict concurrency checking (`SWIFT_STRICT_CONCURRENCY = complete`) + SwiftUI, StoreKit (SKOverlay), Foundation (URLSession, UserDefaults) (001-cross-promo-kit)
+- Swift 6.0 tools, strict concurrency (Swift 6 language mode), iOS 17+ only
+- Frameworks: SwiftUI, StoreKit (SKOverlay), Foundation (URLSession, UserDefaults)
+- No third-party dependencies
 
 ## Project Structure
 
 ```text
-src/
-tests/
+Sources/CrossPromoKit/
+  Models/        PromoApp, AppCatalog, PromoConfig, PromoEvent, LocalizedText
+  Services/      PromoService, NetworkClient, CacheManager
+  Views/         MoreAppsView, PromoAppRow, EmptyStateView, Components/AsyncAppIcon
+  Protocols/     PromoEventDelegate
+  Extensions/    L10n, Locale+Supported
+  Design/        WarmEmbraceTokens (colors, spacing, typography)
+  Resources/     Localizable.xcstrings (en, ko, ja)
+Tests/CrossPromoKitTests/      swift-testing suites + StubURLProtocol/TestFixtures
+Example/CrossPromoDemo/        demo app (CrossPromoDemo.xcodeproj, consumes the local package)
+docs/images/                   README assets
+specs/                         spec-kit feature specs (001-cross-promo-kit, 002-demo-app)
 ```
 
 ## Commands
 
-# Add commands for Swift 6.0 with strict concurrency checking (`SWIFT_STRICT_CONCURRENCY = complete`)
+`swift build` / `swift test` do **not** work: the package is iOS-only and the
+SwiftUI/StoreKit code fails to compile for the macOS host. Use xcodebuild against
+a simulator instead.
+
+```bash
+# Run the package tests
+xcodebuild test -scheme CrossPromoKit -destination 'platform=iOS Simulator,name=iPhone 17'
+
+# Run the demo app (from Example/CrossPromoDemo)
+xcodebuild -scheme CrossPromoDemo -destination 'platform=iOS Simulator,name=iPhone 17' build
+```
+
+Lint config lives in `.swiftlint.yml` (covers `Sources` only, `Tests` excluded).
+SwiftLint is not necessarily installed locally; if available, run `swiftlint` from
+the repo root.
 
 ## Code Style
 
-Swift 6.0 with strict concurrency checking (`SWIFT_STRICT_CONCURRENCY = complete`): Follow standard conventions
-
-## Recent Changes
-- 002-demo-app: Added Swift 6 with `swiftLanguageModes: [.v6]` + CrossPromoKit (local package), SwiftUI, StoreKi
-
-- 001-cross-promo-kit: Added Swift 6.0 with strict concurrency checking (`SWIFT_STRICT_CONCURRENCY = complete`) + SwiftUI, StoreKit (SKOverlay), Foundation (URLSession, UserDefaults)
+- Public API must be explicitly `public`; keep types `Sendable`.
+- Concurrency: `PromoService` and `PromoEventDelegate` are `@MainActor`;
+  `NetworkClient` and `CacheManager` are actors. Do not reach for
+  `@unchecked Sendable` to silence warnings.
+- User-facing strings go through `L10n` / `Localizable.xcstrings`, never literals.
+- Colors, spacing, and fonts come from `WarmEmbraceTokens`, never hardcoded.
+- `.swiftlint.yml` opt-ins ban `force_unwrapping` and implicitly unwrapped
+  optionals; `line_length` and `trailing_whitespace` are disabled.
+- Tests use swift-testing (`import Testing`, `@Test`/`@Suite`), not XCTest.
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
