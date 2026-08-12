@@ -60,12 +60,47 @@ struct CacheManagerTests {
     // MARK: - Expiration
 
     @Test("Fresh cache is not expired")
-    func freshCacheIsNotExpired() async {
-        await withIsolatedCache { cache, _ in
+    func freshCacheIsNotExpired() async throws {
+        try await withIsolatedCache { cache, defaults in
+            // Bracket the save so the assertions compare against the interval the
+            // write actually happened in, not against a fixed wall-clock budget.
+            let beforeSave = Date().timeIntervalSince1970
             await cache.save(Fixture.catalog(ids: ["finebill"]))
+            let afterSave = Date().timeIntervalSince1970
+
+            // save() must record the current time - not zero, not a stale value.
+            let stored = defaults.double(forKey: cache.timestampKey)
+            #expect(stored >= beforeSave)
+            #expect(stored <= afterSave)
 
             #expect(await cache.isExpired() == false)
-            #expect((await cache.cacheAge() ?? .infinity) < 5)
+
+            let age = try #require(await cache.cacheAge())
+            // The age of a just-saved cache cannot be negative, and it cannot
+            // exceed the time that has genuinely elapsed since before the save.
+            // Both bounds are measured with the same clock, so the test holds no
+            // matter how slow the machine is.
+            #expect(age >= 0)
+            #expect(age <= Date().timeIntervalSince1970 - beforeSave)
+        }
+    }
+
+    @Test("cacheAge reports the elapsed time since the recorded timestamp")
+    func cacheAgeReflectsRecordedTimestamp() async throws {
+        try await withIsolatedCache { cache, defaults in
+            await cache.save(Fixture.catalog(ids: ["finebill"]))
+
+            let backdatedBy: TimeInterval = 3600
+            let beforeBackdate = Date().timeIntervalSince1970
+            backdate(cache, defaults, by: backdatedBy)
+
+            let age = try #require(await cache.cacheAge())
+            // Age is at least the amount the timestamp was pushed back by, plus
+            // whatever real time has passed since - an exact, machine-independent
+            // bracket that still catches a wrong unit, a dropped timestamp, or an
+            // age computed from the wrong epoch.
+            #expect(age >= backdatedBy)
+            #expect(age <= backdatedBy + (Date().timeIntervalSince1970 - beforeBackdate))
         }
     }
 
