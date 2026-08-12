@@ -129,7 +129,13 @@ final class ObservedFlag {
     var value = false
 }
 
-@Suite("PromoService concurrent loads", .serialized)
+/// Loads observed through ``GatedURLProtocol``, which is the only stub here that
+/// counts requests.
+///
+/// The cache-first tests live in this suite rather than beside the other
+/// `loadApps` tests because `GatedURLProtocol` keeps a single global responder
+/// slot: only one `.serialized` suite may own it at a time.
+@Suite("PromoService network requests", .serialized)
 @MainActor
 struct PromoServiceConcurrencyTests {
     private let jsonURL = URL(string: "https://example.com/concurrent-apps.json")!
@@ -245,5 +251,69 @@ struct PromoServiceConcurrencyTests {
         #expect(responder.requestCount == 2)
         #expect(service.apps.map(\.id) == ["second"])
         #expect(service.isLoading == false)
+    }
+
+    @Test("A valid cache makes loadApps issue no request at all")
+    func validCacheIssuesNoRequest() async throws {
+        let storage = IsolatedDefaults()
+        defer { storage.remove() }
+        let (session, responder) = GatedURLProtocol.makeSession(bodies: [
+            try Fixture.json(for: Fixture.catalog(ids: ["host", "network"]))
+        ])
+        defer { GatedURLProtocol.reset() }
+        responder.release()  // nothing is held open in this scenario
+        await CacheManager(scope: jsonURL, userDefaults: storage.make())
+            .save(Fixture.catalog(ids: ["host", "cached"]))
+        let service = makeService(session: session, storage: storage)
+
+        await service.loadApps()
+        // A second entry into the UI must not start issuing requests either.
+        await service.loadApps()
+
+        #expect(responder.requestCount == 0)
+        #expect(service.apps.map(\.id) == ["cached"])
+        #expect(service.error == nil)
+    }
+
+    @Test("An expired cache issues exactly one request")
+    func expiredCacheIssuesOneRequest() async throws {
+        let storage = IsolatedDefaults()
+        defer { storage.remove() }
+        let (session, responder) = GatedURLProtocol.makeSession(bodies: [
+            try Fixture.json(for: Fixture.catalog(ids: ["host", "network"]))
+        ])
+        defer { GatedURLProtocol.reset() }
+        responder.release()
+        let cache = CacheManager(scope: jsonURL, userDefaults: storage.make())
+        await cache.save(Fixture.catalog(ids: ["host", "cached"]))
+        storage.make().set(
+            Date().timeIntervalSince1970 - CacheManager.expirationInterval - 60,
+            forKey: cache.timestampKey
+        )
+        let service = makeService(session: session, storage: storage)
+
+        await service.loadApps()
+
+        #expect(responder.requestCount == 1)
+        #expect(service.apps.map(\.id) == ["network"])
+    }
+
+    @Test("forceRefresh issues a request even when the cache is valid")
+    func forceRefreshIssuesRequestDespiteValidCache() async throws {
+        let storage = IsolatedDefaults()
+        defer { storage.remove() }
+        let (session, responder) = GatedURLProtocol.makeSession(bodies: [
+            try Fixture.json(for: Fixture.catalog(ids: ["host", "network"]))
+        ])
+        defer { GatedURLProtocol.reset() }
+        responder.release()
+        await CacheManager(scope: jsonURL, userDefaults: storage.make())
+            .save(Fixture.catalog(ids: ["host", "cached"]))
+        let service = makeService(session: session, storage: storage)
+
+        await service.forceRefresh()
+
+        #expect(responder.requestCount == 1)
+        #expect(service.apps.map(\.id) == ["network"])
     }
 }

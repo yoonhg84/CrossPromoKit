@@ -187,6 +187,15 @@ struct PromoServiceLoadTests {
         #expect(await probeCache(storage, scope: url).load() == catalog)
     }
 
+    /// Backdates the cache timestamp past the expiration window so the next load
+    /// treats the entry as stale.
+    private func expireCache(_ storage: IsolatedDefaults, scope: URL) {
+        storage.make().set(
+            Date().timeIntervalSince1970 - CacheManager.expirationInterval - 60,
+            forKey: probeCache(storage, scope: scope).timestampKey
+        )
+    }
+
     @Test("Network failure falls back to cached data without surfacing an error")
     func networkFailureFallsBackToCache() async {
         let storage = IsolatedDefaults()
@@ -195,7 +204,10 @@ struct PromoServiceLoadTests {
         await probeCache(storage, scope: url).save(Fixture.catalog(ids: ["host", "finebill"]))
         let service = makeService(jsonURL: url, storage: storage)
 
-        await service.loadApps()
+        // forceRefresh, not loadApps: the cache is still valid here, so a plain
+        // load would be answered from it without ever attempting the fetch this
+        // test is about.
+        await service.forceRefresh()
 
         #expect(service.apps.map(\.id) == ["finebill"])
         #expect(service.error == nil)
@@ -208,16 +220,82 @@ struct PromoServiceLoadTests {
         defer { storage.remove() }
         let url = missingURL
         await probeCache(storage, scope: url).save(Fixture.catalog(ids: ["host", "finebill"]))
-        storage.make().set(
-            Date().timeIntervalSince1970 - CacheManager.expirationInterval - 60,
-            forKey: probeCache(storage, scope: url).timestampKey
-        )
+        expireCache(storage, scope: url)
         let service = makeService(jsonURL: url, storage: storage)
 
         await service.loadApps()
 
         #expect(service.apps.map(\.id) == ["finebill"])
         #expect(service.error == nil)
+    }
+
+    @Test("A valid cache is used as-is and the network is never consulted")
+    func validCacheShortCircuitsTheNetwork() async throws {
+        let storage = IsolatedDefaults()
+        defer { storage.remove() }
+        let cached = Fixture.catalog(ids: ["host", "cached"])
+        // The catalog served by the URL differs from the cached one, so a fetch
+        // would be visible in both `apps` and the cache.
+        let url = try makeTemporaryFile(contents: try Fixture.json(for: Fixture.catalog(ids: ["host", "remote"])))
+        defer { removeTemporaryFile(at: url) }
+        await probeCache(storage, scope: url).save(cached)
+        let service = makeService(jsonURL: url, storage: storage)
+
+        await service.loadApps()
+
+        #expect(service.apps.map(\.id) == ["cached"])
+        #expect(service.error == nil)
+        #expect(service.isLoading == false)
+        #expect(await probeCache(storage, scope: url).load() == cached)
+    }
+
+    @Test("An expired cache falls through to the network")
+    func expiredCacheFallsThroughToTheNetwork() async throws {
+        let storage = IsolatedDefaults()
+        defer { storage.remove() }
+        let remote = Fixture.catalog(ids: ["host", "remote"])
+        let url = try makeTemporaryFile(contents: try Fixture.json(for: remote))
+        defer { removeTemporaryFile(at: url) }
+        await probeCache(storage, scope: url).save(Fixture.catalog(ids: ["host", "cached"]))
+        expireCache(storage, scope: url)
+        let service = makeService(jsonURL: url, storage: storage)
+
+        await service.loadApps()
+
+        #expect(service.apps.map(\.id) == ["remote"])
+        #expect(await probeCache(storage, scope: url).load() == remote)
+    }
+
+    @Test("forceRefresh ignores a valid cache and fetches anyway")
+    func forceRefreshIgnoresValidCache() async throws {
+        let storage = IsolatedDefaults()
+        defer { storage.remove() }
+        let remote = Fixture.catalog(ids: ["host", "remote"])
+        let url = try makeTemporaryFile(contents: try Fixture.json(for: remote))
+        defer { removeTemporaryFile(at: url) }
+        await probeCache(storage, scope: url).save(Fixture.catalog(ids: ["host", "cached"]))
+        // Not expired: a plain loadApps() would stop at the cache here.
+        let service = makeService(jsonURL: url, storage: storage)
+
+        await service.forceRefresh()
+
+        #expect(service.apps.map(\.id) == ["remote"])
+        #expect(await probeCache(storage, scope: url).load() == remote)
+    }
+
+    @Test("A valid cache belonging to another catalog URL is not used")
+    func validCacheIsNotSharedAcrossCatalogURLs() async {
+        let storage = IsolatedDefaults()
+        defer { storage.remove() }
+        let urlOne = missingURL
+        let urlTwo = missingURL
+        await probeCache(storage, scope: urlOne).save(Fixture.catalog(ids: ["host", "finebill"]))
+
+        let serviceTwo = makeService(jsonURL: urlTwo, storage: storage)
+        await serviceTwo.loadApps()
+
+        #expect(serviceTwo.apps.isEmpty)
+        #expect(serviceTwo.error != nil)
     }
 
     @Test("Network failure with no cache reports the error and shows nothing")
