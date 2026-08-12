@@ -1,9 +1,23 @@
 import Foundation
 
 /// Network client for fetching the app catalog from remote endpoint.
+///
+/// ## Timeouts and retries
+///
+/// The client adds no timeout or retry policy of its own; it inherits whatever
+/// the session it was given is configured with. With the default
+/// `URLSession.shared` that means a 60-second per-request timeout and a 7-day
+/// resource timeout, and a failed request is **not** retried: ``PromoService``
+/// treats any failure as its cue to fall back to the cache rather than to try
+/// again. To use different limits, pass a session configured with your own
+/// `timeoutIntervalForRequest` / `timeoutIntervalForResource`.
 public actor NetworkClient {
     private let urlSession: URLSession
 
+    /// Creates a client backed by the given session.
+    /// - Parameter urlSession: The session used for every fetch. Its
+    ///   configuration determines timeout behaviour — see the type's discussion.
+    ///   Defaults to `URLSession.shared`.
     public init(urlSession: URLSession = .shared) {
         self.urlSession = urlSession
     }

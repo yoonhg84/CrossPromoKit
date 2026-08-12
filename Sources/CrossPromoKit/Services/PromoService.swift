@@ -35,6 +35,13 @@ public final class PromoService {
     private var catalog: AppCatalog?
     private var trackedImpressions: Set<String> = []
 
+    /// The load currently in flight, or `nil` when none is running.
+    ///
+    /// Both entry points make sure a new load only starts once this is `nil`,
+    /// so at most one load runs at a time and the running task can clear the
+    /// slot itself without clobbering a newer one.
+    private var loadTask: Task<Void, Never>?
+
     // MARK: - Initialization
 
     /// Creates a service for the given configuration.
@@ -74,9 +81,20 @@ public final class PromoService {
 
     /// Loads apps using three-tier fallback: Network → Cache → Empty State.
     /// Automatically saves successful network responses to cache.
+    ///
+    /// Calls that arrive while a load is already running are coalesced: they
+    /// return immediately without starting a second fetch, and without waiting
+    /// for the running one. Use ``forceRefresh()`` when the caller needs data
+    /// that is fresh as of the moment it asked.
     public func loadApps() async {
-        guard !isLoading else { return }
+        guard loadTask == nil else { return }
+        await beginLoad().value
+    }
 
+    /// Fetches the catalog and publishes the result.
+    ///
+    /// Callers must go through ``beginLoad()`` so the in-flight task is tracked.
+    private func performLoad() async {
         isLoading = true
         error = nil
 
@@ -105,12 +123,23 @@ public final class PromoService {
         isLoading = false
     }
 
-    /// Forces a refresh from the network, ignoring cache.
+    /// Forces a refresh from the network.
+    ///
+    /// Unlike ``loadApps()``, a refresh is never dropped: if a load is already
+    /// in flight this waits for that load to finish and then runs its own
+    /// fetch, so by the time the call returns ``apps`` reflects a fetch that
+    /// started after the refresh was requested.
     ///
     /// The existing cache is kept so it can still serve as a fallback if the
     /// network fetch fails; a successful fetch overwrites it.
     public func forceRefresh() async {
-        await loadApps()
+        // Wait out any in-flight load. Every iteration awaits a task that is
+        // genuinely running — a finished load clears `loadTask` before its
+        // waiters resume — so this cannot spin on an already-completed task.
+        while let inFlight = loadTask {
+            await inFlight.value
+        }
+        await beginLoad().value
     }
 
     /// Handles app row tap event and presents App Store overlay.
@@ -146,7 +175,7 @@ public final class PromoService {
     }
 
     /// Opens the App Store directly for the specified app.
-    /// - Parameter appID: The App Store ID of the app
+    /// - Parameter appStoreID: The App Store ID of the app
     public func openAppStoreDirectly(appStoreID: String) {
         let urlString = "https://apps.apple.com/app/id\(appStoreID)"
         guard let url = URL(string: urlString) else { return }
@@ -175,6 +204,21 @@ public final class PromoService {
     }
 
     // MARK: - Private Methods
+
+    /// Starts a load and publishes it as the in-flight task.
+    ///
+    /// Only ever called while `loadTask` is `nil`, so the task can clear the
+    /// slot itself on completion. Clearing it from inside the task — rather
+    /// than after awaiting it — is what lets ``forceRefresh()`` observe `nil`
+    /// as soon as the load it was waiting on is done.
+    private func beginLoad() -> Task<Void, Never> {
+        let task = Task {
+            await self.performLoad()
+            self.loadTask = nil
+        }
+        loadTask = task
+        return task
+    }
 
     private func presentAppStoreOverlay(for app: PromoApp) {
         // Tapping a second app while an overlay is up would otherwise stack a new
