@@ -1,3 +1,5 @@
+> **FROZEN — do not follow.** Historical record of the originally intended usage; the API shown below (e.g. `MoreAppsView(currentAppID:)`) no longer exists. See [`../README.md`](../README.md).
+
 # Quickstart: CrossPromoKit Demo App
 
 **Feature Branch**: `002-demo-app`

@@ -54,5 +54,5 @@ and a public change updates both READMEs together.
 Issue → branch → PR → green CI → merge. `/ship` runs that pipeline end to end;
 `.claude/agents/issue-worker.md` is the per-issue contract.
 
-`specs/` is a historical record, not a spec to follow — parts of it describe APIs
+`docs/specs/` is a historical record, not a spec to follow — parts of it describe APIs
 that no longer exist. Code cites it only via `FR-###`.
