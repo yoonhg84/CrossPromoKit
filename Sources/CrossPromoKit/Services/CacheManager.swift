@@ -5,13 +5,13 @@ import Foundation
 public actor CacheManager: Sendable {
     // MARK: - Constants
 
-    private enum CacheKeys {
+    enum CacheKeys {
         static let catalog = "CrossPromoKit.cachedCatalog"
         static let timestamp = "CrossPromoKit.cacheTimestamp"
     }
 
     /// Cache expiration time: 24 hours in seconds
-    private static let expirationInterval: TimeInterval = 24 * 60 * 60
+    static let expirationInterval: TimeInterval = 24 * 60 * 60
 
     // MARK: - Private Properties
 
